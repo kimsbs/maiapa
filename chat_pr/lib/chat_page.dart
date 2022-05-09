@@ -1,5 +1,6 @@
-import 'package:chat_pr/chat_message.dart';
 import 'package:flutter/material.dart';
+
+import 'package:chat_pr/chat_message.dart';
 
 class HomePage extends StatefulWidget{
   @override
@@ -61,18 +62,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void Response(String text){
-    ChatMessage newchat = ChatMessage(
-      txt: text,
-      type: false,
-    );
-    setState(() {
-      _chats.insert(0, newchat);
-    });
-  }
-
-
   void _handleSubmitted(String text){
+    if(text == "")
+      return ;
     _textEditingController.clear();
     ChatMessage newchat = ChatMessage(
         txt : text,
@@ -82,5 +74,15 @@ class _HomePageState extends State<HomePage> {
       _chats.insert(0, newchat);
     });
     Response(text);
+  }
+
+  void Response(String text){
+    ChatMessage newchat = ChatMessage(
+      txt: text,
+      type: false,
+    );
+    setState(() {
+      _chats.insert(0, newchat);
+    });
   }
 }

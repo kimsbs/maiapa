@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'check_valid.dart';
+import 'map_page.dart';
+
 class ChatMessage extends StatelessWidget {
   ChatMessage({required this.txt, required this.type});
 
@@ -20,7 +23,7 @@ class ChatMessage extends StatelessWidget {
   List<Widget> otherMessage(context) {
     final String output;
 
-    output = _Is_rightInput(txt);
+    output = Is_rightInput(txt);
     return <Widget>[
       Container(
         margin: const EdgeInsets.only(right: 16.0),
@@ -31,13 +34,15 @@ class ChatMessage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text("마이아파", style: TextStyle(fontWeight: FontWeight.bold)),
-            if (output != "오류") _Case_Map() else _Non_Case_Map()
+            //output 의 종류에 따라 Map버튼 유무.
+            output != "오류" ? _Case_Map(context) : _Non_Case_Map()
           ],
         ),
       ),
     ];
   }
 
+  //사용자의 입력메세지.
   @override
   List<Widget> myMessage(context) {
     return <Widget>[
@@ -46,19 +51,8 @@ class ChatMessage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             Container(
-              margin: const EdgeInsets.only(top: 5.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(
-                  width: 1,
-                  color: Colors.green,
-                ),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(5),
-                  bottomRight: Radius.circular(5),
-                  bottomLeft: Radius.circular(5),
-                ),
-              ),
+              padding: EdgeInsets.all(5),
+              decoration: _Chat_Decoration(type),
               child: Text(txt),
             ),
           ],
@@ -67,42 +61,23 @@ class ChatMessage extends StatelessWidget {
     ];
   }
 
+  //응답 메세지중 지도 버튼을 출력하지 않는 경우.
   Widget _Non_Case_Map() {
     return Container(
+      padding: EdgeInsets.all(5),
       margin: const EdgeInsets.only(top: 5.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(
-          width: 1,
-          color: Colors.green,
-        ),
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(5),
-          bottomRight: Radius.circular(5),
-          bottomLeft: Radius.circular(5),
-        ),
-      ),
+      decoration: _Chat_Decoration(type),
       child: Text("정확한 값을 입력해주세요"),
     );
   }
 
-  Widget _Case_Map() {
+  //응답메세지중, 지도 버튼을 출력하는 경우.
+  Widget _Case_Map(BuildContext context) {
     return Container(
+      padding: EdgeInsets.all(5),
       margin: const EdgeInsets.only(top: 5.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(
-          width: 1,
-          color: Colors.green,
-        ),
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(10),
-          bottomRight: Radius.circular(10),
-          bottomLeft: Radius.circular(10),
-        ),
-      ),
+      decoration: _Chat_Decoration(type),
       child: Column(
-        //crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             "$txt 를 검색한 결과입니다.",
@@ -113,7 +88,7 @@ class ChatMessage extends StatelessWidget {
               primary: Colors.green,
             ),
             onPressed: () {
-              _Press_Map();
+              Press_Map(context, txt);
             },
           ),
         ],
@@ -121,14 +96,28 @@ class ChatMessage extends StatelessWidget {
     );
   }
 
-  String _Is_rightInput(String text) {
-    if (text == "지도")
-      return "지도";
-    else
-      return "오류";
+  BoxDecoration _Chat_Decoration(bool type) {
+    return BoxDecoration(
+        color: Colors.white,
+        border: Border.all(
+          width: 1,
+          color: Colors.green,
+        ),
+        borderRadius: _Radious_case(type));
   }
 
-  void _Press_Map() {
-    print("지도열기");
+  BorderRadius _Radious_case(bool type) {
+    if (type)
+      return BorderRadius.only(
+        topLeft: Radius.circular(10),
+        bottomRight: Radius.circular(10),
+        bottomLeft: Radius.circular(10),
+      );
+    else
+      return BorderRadius.only(
+        topRight: Radius.circular(10),
+        bottomRight: Radius.circular(10),
+        bottomLeft: Radius.circular(10),
+      );
   }
 }
