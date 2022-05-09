@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:chat_pr/chat_page.dart';
 
 void main(){
-  runApp(Chatapp());
+  runApp(Home());
 }
 
-class Chatapp extends StatelessWidget {
+class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,4 +18,38 @@ class Chatapp extends StatelessWidget {
       home: HomePage(),
     );
   }
+}
+
+class HomePage extends StatefulWidget{
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Second Route"),
+      ),
+      body: Center(
+        child: OutlinedButton(
+          child: Text("채팅창 열기"),
+          style: OutlinedButton.styleFrom(primary: Colors.green),
+          onPressed: () {
+            Press_Chat(context);
+          },
+        ),
+      ),
+    );
+  }
+}
+
+void Press_Chat(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => ChatPage(),
+    ),
+  );
 }

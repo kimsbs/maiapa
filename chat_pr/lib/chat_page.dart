@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:chat_pr/chat_message.dart';
 
-class HomePage extends StatefulWidget{
+class ChatPage extends StatefulWidget{
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<ChatPage> createState() => _ChatPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _ChatPageState extends State<ChatPage> {
   TextEditingController _textEditingController = TextEditingController();
   List<ChatMessage> _chats = [];
 
@@ -46,6 +46,8 @@ class _HomePageState extends State<HomePage> {
           child: TextField(
             controller: _textEditingController,
             onSubmitted: _handleSubmitted,
+            maxLines: 3,
+            minLines: 1,
           ),
         ),
         Container(
@@ -63,23 +65,18 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _handleSubmitted(String text){
+    //공백상태에서 엔터 불가능하게
     if(text == "")
       return ;
     _textEditingController.clear();
-    ChatMessage newchat = ChatMessage(
-        txt : text,
-        type : true,
-    );
-    setState(() {
-      _chats.insert(0, newchat);
-    });
-    Response(text);
+    _Add_chat(text, true); // my_message
+    _Add_chat(text, false); // response_message
   }
 
-  void Response(String text){
+  void _Add_chat(String text, bool type){
     ChatMessage newchat = ChatMessage(
       txt: text,
-      type: false,
+      type: type,
     );
     setState(() {
       _chats.insert(0, newchat);
