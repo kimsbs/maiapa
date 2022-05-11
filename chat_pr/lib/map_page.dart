@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-void Press_Map(BuildContext context, String text) async{
+void Press_Map(BuildContext context, String text) async {
   Navigator.push(
     context,
     MaterialPageRoute(
@@ -24,10 +24,7 @@ class _googleMapState extends State<googleMap> {
   GoogleMapController? mapController;
 
   final double zoom_value = 17.5;
-  static LatLng initialLocation = LatLng(
-      37.5023273,
-      126.764252
-  );
+  static LatLng initialLocation = LatLng(38.5023273, 126.764252);
 
   static CameraPosition initialPosition = CameraPosition(
     target: initialLocation,
@@ -49,89 +46,48 @@ class _googleMapState extends State<googleMap> {
     position: initialLocation,
   );
 
-  void getLocation(LatLng initialLocation,CameraPosition initialPosition) async{
+  void getLocation() async {
     final location = await Geolocator.getCurrentPosition();
 
-    mapController!.animateCamera(CameraUpdate.newLatLng(
-      LatLng(
-        location.latitude,
-        location.longitude,
+    mapController!.animateCamera(
+      CameraUpdate.newLatLng(
+        LatLng(
+          location.latitude,
+          location.longitude,
+        ),
       ),
-    )
     );
-
-    initialLocation=LatLng(location.latitude,location.longitude);
+    initialLocation = LatLng(location.latitude, location.longitude);
     initialPosition = CameraPosition(
-      target: LatLng(location.latitude,location.longitude),
+      target: LatLng(location.latitude, location.longitude),
       zoom: zoom_value,
     );
-
-
-  }
-
-
-  Future<LatLng> test() async{
-    final location = await Geolocator.getCurrentPosition();
-
-    return LatLng(location.latitude, location.longitude);
-  }
-
-  @override
-  void initState(){
-    super.initState();
-    setState(() {
-      getLocation(initialLocation,initialPosition);
-    });
-  }
-
-  Future<String> moveLocation() async{
-    if(mapController == null){
-      return '에러';
-    }
-
-    final location = await Geolocator.getCurrentPosition();
-
-    mapController!.animateCamera(CameraUpdate.newLatLng(
-      LatLng(
-        location.latitude,
-        location.longitude,
-      ),
-    )
-    );
-
-    initialLocation=LatLng(location.latitude,location.longitude);
-    initialPosition = CameraPosition(
-      target: initialLocation,
-      zoom: zoom_value,
-    );
-
-    return '현재 위치 확인 완료';
   }
 
   @override
   Widget build(BuildContext context) {
-    getLocation(initialLocation,initialPosition);
+    getLocation();
     return Scaffold(
         appBar: renderAppBar(),
         body: GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition: initialPosition,
-        myLocationEnabled: true,
-        myLocationButtonEnabled: false,
-        circles: Set.from([circle]),
-        markers: Set.from([marker]),
-        onMapCreated: onMapCreated,
-    )
+          mapType: MapType.normal,
+          initialCameraPosition: initialPosition,
+          myLocationEnabled: true,
+          myLocationButtonEnabled: false,
+          circles: Set.from([circle]),
+          markers: Set.from([marker]),
+          onMapCreated: onMapCreated,
+        ),
     );
   }
 
-  onMapCreated(GoogleMapController controller){
+  onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
 
-  AppBar renderAppBar(){
+  AppBar renderAppBar() {
     return AppBar(
-      title: Text(
+      title: const Text(
         'Googlemap',
         style: TextStyle(
           color: Colors.blue,
@@ -141,27 +97,26 @@ class _googleMapState extends State<googleMap> {
       backgroundColor: Colors.white,
       actions: [
         IconButton(
-          onPressed: () async {
-            if(mapController == null){
-              return;
-            }
-            final location = await Geolocator.getCurrentPosition();
-
-            mapController!.animateCamera(CameraUpdate.newLatLng(
-              LatLng(
-                location.latitude,
-                location.longitude,
-              ),
-            )
-            );
-
+          onPressed: (){
+            press_button();
           },
           color: Colors.blue,
-          icon: Icon(
-              Icons.my_location
-          ),
+          icon: const Icon(Icons.my_location),
         )
       ],
     );
+  }
+
+  void press_button() async{
+    if (mapController == null) {
+      return;
+    }
+    final location = await Geolocator.getCurrentPosition();
+    mapController!.animateCamera(CameraUpdate.newLatLng(
+      LatLng(
+        location.latitude,
+        location.longitude,
+      ),
+    ));
   }
 }

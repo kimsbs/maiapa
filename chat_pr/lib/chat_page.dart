@@ -13,26 +13,27 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context){
-    if(_chats.isEmpty)
+    if(_chats.isEmpty) {
       _Add_chat("/도움", false);
+    }
     return Scaffold(
       appBar : AppBar(
         centerTitle: true,
-        title : Text("마이아파"),
+        title : const Text("마이아파"),
       ),
       body: SafeArea(
         child: Column(
           children: [
             Flexible(
                 child: ListView.builder(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   reverse: true,
                   itemBuilder: (_, int index) => _chats[index],
                   itemCount: _chats.length,
                 )),
-            Divider(height: 1.0,),
+            const Divider(height: 1.0,),
             Container(
-              decoration: new BoxDecoration(color: Theme.of(context).cardColor),
+              decoration: BoxDecoration(color: Theme.of(context).cardColor),
               child: _buildInserttab(),
             ),
           ],
@@ -53,12 +54,13 @@ class _ChatPageState extends State<ChatPage> {
           ),
         ),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 4.0),
+          padding: const EdgeInsets.symmetric(horizontal: 4.0),
           child: IconButton(
-            icon: Icon(Icons.send),
+            icon: const Icon(Icons.send),
             onPressed: (){
-              if(_textEditingController.text.isNotEmpty)
+              if(_textEditingController.text.isNotEmpty) {
                 _handleSubmitted(_textEditingController.text);
+              }
             },
             color: Colors.green,
           ),
