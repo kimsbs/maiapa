@@ -29,7 +29,7 @@ class ChatMessage extends StatelessWidget {
   //응답 메세지
   @override
   List<Widget> responseMessage(context) {
-    final Tuple2<String, bool> output;
+    final Tuple2<String, int> output;
     //Is_rightInput에서 들어온 text판별 정상유무는 bool에 저장.
     output = Is_rightInput(txt);
     return <Widget>[
@@ -47,7 +47,7 @@ class ChatMessage extends StatelessWidget {
             //봇의 이름
             const Text("마이아파", style: TextStyle(fontWeight: FontWeight.bold)),
             //output 의 종류에 따라 Map버튼 유무.
-            output.item2 ? _Case_Map(context) : _Non_Case_Map(output.item1)
+            output.item2 < 5 ? _Case_Map(context, output) : _Non_Case_Map(output.item1)
           ],
         ),
       ),
@@ -90,7 +90,7 @@ class ChatMessage extends StatelessWidget {
   }
 
   //응답메세지가 지도 버튼을 출력하는 경우.
-  Widget _Case_Map(BuildContext context) {
+  Widget _Case_Map(BuildContext context, Tuple2<String, int> output) {
     return ConstrainedBox(
       constraints: _Chat_Width_Control(),
       child: Container(

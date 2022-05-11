@@ -8,8 +8,8 @@ class ChatPage extends StatefulWidget{
 }
 
 class _ChatPageState extends State<ChatPage> {
-  TextEditingController _textEditingController = TextEditingController();
-  List<ChatMessage> _chats = [];
+  final TextEditingController _textEditingController = TextEditingController();
+  final List<ChatMessage> _chats = [];
 
   @override
   Widget build(BuildContext context){
