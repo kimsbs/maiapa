@@ -13,6 +13,8 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context){
+    if(_chats.isEmpty)
+      _Add_chat("/도움", false);
     return Scaffold(
       appBar : AppBar(
         centerTitle: true,
@@ -55,7 +57,8 @@ class _ChatPageState extends State<ChatPage> {
           child: IconButton(
             icon: Icon(Icons.send),
             onPressed: (){
-              _handleSubmitted(_textEditingController.text);
+              if(_textEditingController.text.isNotEmpty)
+                _handleSubmitted(_textEditingController.text);
             },
             color: Colors.green,
           ),
@@ -65,9 +68,6 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _handleSubmitted(String text){
-    //공백상태에서 엔터 불가능하게
-    if(text == "")
-      return ;
     _textEditingController.clear();
     _Add_chat(text, true); // my_message
     _Add_chat(text, false); // response_message
