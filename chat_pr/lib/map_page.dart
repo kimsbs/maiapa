@@ -23,6 +23,7 @@ class googleMap extends StatefulWidget {
 class _googleMapState extends State<googleMap> {
   GoogleMapController? mapController;
 
+  final double zoom_value = 17.5;
   static LatLng initialLocation = LatLng(
       37.5023273,
       126.764252
@@ -30,7 +31,7 @@ class _googleMapState extends State<googleMap> {
 
   static CameraPosition initialPosition = CameraPosition(
     target: initialLocation,
-    zoom: 17,
+    zoom: 17.5,
   );
 
   static final double distance = 100;
@@ -62,19 +63,24 @@ class _googleMapState extends State<googleMap> {
     initialLocation=LatLng(location.latitude,location.longitude);
     initialPosition = CameraPosition(
       target: LatLng(location.latitude,location.longitude),
-      zoom: 55,
+      zoom: zoom_value,
     );
-    return ;
-    }
+
+
+  }
+
+
+  Future<LatLng> test() async{
+    final location = await Geolocator.getCurrentPosition();
+
+    return LatLng(location.latitude, location.longitude);
+  }
 
   @override
   void initState(){
     super.initState();
     setState(() {
       getLocation(initialLocation,initialPosition);
-      print('initState part');
-      print(initialLocation);
-      print(initialPosition);
     });
   }
 
@@ -96,7 +102,7 @@ class _googleMapState extends State<googleMap> {
     initialLocation=LatLng(location.latitude,location.longitude);
     initialPosition = CameraPosition(
       target: initialLocation,
-      zoom: 25,
+      zoom: zoom_value,
     );
 
     return '현재 위치 확인 완료';
@@ -104,6 +110,7 @@ class _googleMapState extends State<googleMap> {
 
   @override
   Widget build(BuildContext context) {
+    getLocation(initialLocation,initialPosition);
     return Scaffold(
         appBar: renderAppBar(),
         body: GoogleMap(
@@ -120,30 +127,6 @@ class _googleMapState extends State<googleMap> {
 
   onMapCreated(GoogleMapController controller){
     mapController = controller;
-  }
-
-  Future<String> checkPermission() async {
-    final isLocationEnabled = await Geolocator.isLocationServiceEnabled();
-
-    if(!isLocationEnabled){
-      return '위치 서비스를 활성화해주세요.';
-    }
-
-    LocationPermission  checkedPermission = await Geolocator.checkPermission();
-
-    if(checkedPermission == LocationPermission.denied){
-      checkedPermission = await Geolocator.requestPermission();
-
-      if(checkedPermission == LocationPermission.denied){
-        return '위치 권한을 허가해주세요.';
-      }
-    }
-
-    if(checkedPermission == LocationPermission.deniedForever){
-      return '설정에서 앱의 위치 권한을 허가해주세요.';
-    }
-    print('check Permission successed');
-    return '위치 권한이 허가되었습니다.';
   }
 
   AppBar renderAppBar(){
