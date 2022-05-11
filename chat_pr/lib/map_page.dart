@@ -24,7 +24,7 @@ class _googleMapState extends State<googleMap> {
   GoogleMapController? mapController;
 
   final double zoom_value = 17.5;
-  static LatLng initialLocation = LatLng(38.5023273, 126.764252);
+  static LatLng initialLocation = LatLng(37.5023273, 126.764252);
 
   static CameraPosition initialPosition = CameraPosition(
     target: initialLocation,
@@ -32,6 +32,7 @@ class _googleMapState extends State<googleMap> {
   );
 
   static final double distance = 100;
+
   static Circle circle = Circle(
     circleId: CircleId('circle'),
     center: initialLocation,
@@ -61,6 +62,14 @@ class _googleMapState extends State<googleMap> {
     initialPosition = CameraPosition(
       target: LatLng(location.latitude, location.longitude),
       zoom: zoom_value,
+    );
+    circle = Circle(
+      circleId: CircleId('circle'),
+      center: initialLocation,
+      fillColor: Colors.blue.withOpacity(0.5),
+      radius: distance,
+      strokeColor: Colors.blue,
+      strokeWidth: 1,
     );
   }
 
