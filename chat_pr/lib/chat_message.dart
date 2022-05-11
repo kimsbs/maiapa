@@ -47,7 +47,7 @@ class ChatMessage extends StatelessWidget {
             //봇의 이름
             const Text("마이아파", style: TextStyle(fontWeight: FontWeight.bold)),
             //output 의 종류에 따라 Map버튼 유무.
-            output.item2 < 5 ? _Case_Map(context, output) : _Non_Case_Map(output.item1)
+            output.item2 < 4 && output.item2 > 1 ? _Case_Map(context, output) : _Non_Case_Map(output.item1)
           ],
         ),
       ),
