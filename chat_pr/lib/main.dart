@@ -45,7 +45,12 @@ class _HomePageState extends State<HomePage> {
             return Center(
               child: OutlinedButton(
                 child: Text("채팅창 열기"),
-                style: OutlinedButton.styleFrom(primary: Colors.green),
+                style: OutlinedButton.styleFrom(
+                  shape: StadiumBorder(),
+                    primary: Colors.white,
+                    backgroundColor: Colors.green,
+
+                ),
                 onPressed: () {
                   Press_Chat(context);
                 },
