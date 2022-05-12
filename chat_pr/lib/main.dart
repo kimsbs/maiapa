@@ -1,34 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:chat_pr/chat_page.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import 'package:chat_pr/screen/home_screen.dart';
+
 
 void main() {
   runApp(Home());
 }
 
-
-class Splash extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: SplashScreen(),
-    );
-  }
-}
-
-class SplashScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.white,
-        body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Image.asset('asset/img/logo.png',),
-
-        ]));
-  }
-}
-
+// Execute HomeScreen
 class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -54,6 +35,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFFFFFFF),
       body: FutureBuilder(
         future: checkPermission(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -62,67 +44,9 @@ class _HomePageState extends State<HomePage> {
           }
           if (snapshot.data == '위치 권한이 허가되었습니다.') {
             return Center(
-                child: SizedBox(
-              width: 325,
-              height: 362,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 274,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                    child: Image.asset('asset/img/logo.png'),
-                  ),
-                  SizedBox(height: 166),
-                  InkWell(
-                    onTap: () {
-                      Press_Chat(context);
-                    },
-                    child: Container(
-                      width: 325,
-                      height: 66,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: Color(0xff00b050),
-                      ),
-                      padding: const EdgeInsets.only(
-                        left: 26,
-                        right: 25,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 274,
-                            height: 50,
-                            child: Text(
-                              "진단채팅 시작하기",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 30,
-                                fontFamily: "Inter",
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ));
+              // Call screen/home_screen/HomeScreen()
+                child: HomeScreen(),
+            );
           }
           return Center(
             child: Text(snapshot.data),
@@ -132,6 +56,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // Check Permission for the Google map
   Future<String> checkPermission() async {
     final isLocationEnabled = await Geolocator.isLocationServiceEnabled();
 
@@ -157,11 +82,5 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-void Press_Chat(BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => ChatPage(),
-    ),
-  );
-}
+
+
