@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:chat_pr/chat_page.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import 'package:chat_pr/screen/home_screen.dart';
+
 
 void main() {
   runApp(Home());
 }
 
+// Execute HomeScreen
 class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -32,9 +35,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Second Route"),
-      ),
+      backgroundColor: Color(0xFFFFFFFF),
       body: FutureBuilder(
         future: checkPermission(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -43,13 +44,8 @@ class _HomePageState extends State<HomePage> {
           }
           if (snapshot.data == '위치 권한이 허가되었습니다.') {
             return Center(
-              child: OutlinedButton(
-                child: Text("채팅창 열기"),
-                style: OutlinedButton.styleFrom(primary: Colors.green),
-                onPressed: () {
-                  Press_Chat(context);
-                },
-              ),
+              // Call screen/home_screen/HomeScreen()
+                child: HomeScreen(),
             );
           }
           return Center(
@@ -60,6 +56,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // Check Permission for the Google map
   Future<String> checkPermission() async {
     final isLocationEnabled = await Geolocator.isLocationServiceEnabled();
 
@@ -85,11 +82,5 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-void Press_Chat(BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => ChatPage(),
-    ),
-  );
-}
+
+
