@@ -105,16 +105,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           SizedBox(
-                            width: 274,
-                            height: 50,
-                            child: Text(
-                              "진단채팅 시작하기",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 30,
-                                fontFamily: "Inter",
-                                fontWeight: FontWeight.w600,
+                            child: Center(
+                              child: Text(
+                                "진단채팅 시작하기",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 30,
+                                  fontFamily: "Inter",
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           ),
@@ -151,16 +151,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           SizedBox(
-                            width: 270,
-                            height: 50,
-                            child: Text(
-                              "최근 탐색 기록",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Color(0xFF00b050),
-                                fontSize: 30,
-                                fontFamily: "Inter",
-                                fontWeight: FontWeight.w600,
+                            child: Center(
+                              child: Text(
+                                "최근 탐색 기록",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Color(0xFF00b050),
+                                  fontSize: 30,
+                                  fontFamily: "Inter",
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           ),

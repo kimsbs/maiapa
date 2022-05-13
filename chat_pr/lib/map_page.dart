@@ -1,8 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+double lat = 0;
+double lng = 0;
+bool   flg = false;
 
 void Press_Map(BuildContext context, String text) async {
   Navigator.push(
@@ -24,7 +30,8 @@ class _googleMapState extends State<googleMap> {
   GoogleMapController? mapController;
 
   final double zoom_value = 17.5;
-  static LatLng initialLocation = LatLng(37.5023273, 126.764252);
+
+  static LatLng initialLocation = LatLng(lat, lng);
 
   static CameraPosition initialPosition = CameraPosition(
     target: initialLocation,
@@ -47,30 +54,16 @@ class _googleMapState extends State<googleMap> {
     position: initialLocation,
   );
 
-  void getLocation() async {
+  Future<void> getLocation() async {
     final location = await Geolocator.getCurrentPosition();
 
-    mapController!.animateCamera(
-      CameraUpdate.newLatLng(
-        LatLng(
-          location.latitude,
-          location.longitude,
-        ),
-      ),
-    );
-    initialLocation = LatLng(location.latitude, location.longitude);
-    initialPosition = CameraPosition(
-      target: LatLng(location.latitude, location.longitude),
-      zoom: zoom_value,
-    );
-    circle = Circle(
-      circleId: CircleId('circle'),
-      center: initialLocation,
-      fillColor: Colors.blue.withOpacity(0.5),
-      radius: distance,
-      strokeColor: Colors.blue,
-      strokeWidth: 1,
-    );
+    lat = location.latitude;
+    lng = location.longitude;
+    if(flg == false) {
+      setState(() {
+        flg = true;
+      });
+    }
   }
 
   @override
@@ -78,7 +71,7 @@ class _googleMapState extends State<googleMap> {
     getLocation();
     return Scaffold(
         appBar: renderAppBar(),
-        body: GoogleMap(
+        body: flg == false ? Center(child: CircularProgressIndicator()): GoogleMap(
           mapType: MapType.normal,
           initialCameraPosition: initialPosition,
           myLocationEnabled: true,
