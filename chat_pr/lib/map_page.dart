@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-double lat = 0;
-double lng = 0;
-bool   flg = false;
+double _lat = 0;
+double _lng = 0;
+bool   _flg = false;
 
 void Press_Map(BuildContext context, String text) async {
   Navigator.push(
@@ -31,7 +31,7 @@ class _googleMapState extends State<googleMap> {
 
   final double zoom_value = 17.5;
 
-  static LatLng initialLocation = LatLng(lat, lng);
+  static LatLng initialLocation = LatLng(_lat, _lng);
 
   static CameraPosition initialPosition = CameraPosition(
     target: initialLocation,
@@ -57,11 +57,11 @@ class _googleMapState extends State<googleMap> {
   Future<void> getLocation() async {
     final location = await Geolocator.getCurrentPosition();
 
-    lat = location.latitude;
-    lng = location.longitude;
-    if(flg == false) {
+    _lat = location.latitude;
+    _lng = location.longitude;
+    if(_flg == false) {
       setState(() {
-        flg = true;
+        _flg = true;
       });
     }
   }
@@ -71,7 +71,7 @@ class _googleMapState extends State<googleMap> {
     getLocation();
     return Scaffold(
         appBar: renderAppBar(),
-        body: flg == false ? Center(child: CircularProgressIndicator()): GoogleMap(
+        body: _flg == false ? Center(child: CircularProgressIndicator()): GoogleMap(
           mapType: MapType.normal,
           initialCameraPosition: initialPosition,
           myLocationEnabled: true,
