@@ -17,23 +17,23 @@ class _ChatPageState extends State<ChatPage> {
       _Add_chat("/도움", false);
     }
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Color(0xff00b050),
+        title: Center(
+          child: Image.asset(
+            'asset/img/chat_logo.png',
+            fit: BoxFit.contain,
+            height: 50,
+          ),
+        ),
+        elevation: 0,
+      ),
       backgroundColor: Color(0xff00b050),
       body: Column(
         children: [
-          Container(
-            color: Color(0xff00b050),
-            height: MediaQuery.of(context).size.height * 0.04,
-            width: MediaQuery.of(context).size.width,
-          ),
-          Container(
-            color: Color(0xff00b050),
-            height: MediaQuery.of(context).size.height * 0.09,
-            width: MediaQuery.of(context).size.width,
-            child: Image.asset('asset/img/chat_logo.png'),
-          ),
           _highlightbar(),
           Flexible(
-            flex: 7,
             child: Container(
               color: Color(0xffeeeeee),
               child: ListView.builder(
@@ -52,7 +52,7 @@ class _ChatPageState extends State<ChatPage> {
                 children: [
                   SizedBox(height: 7),
                   _Chattab(),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.04,),
+                  SizedBox(height: 7),
                 ],
               ),
             ),
@@ -72,7 +72,7 @@ class _ChatPageState extends State<ChatPage> {
         ),
       ),
       child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.055,
+        height: 35,
         width: MediaQuery.of(context).size.width,
         child: const Center(
           child: Text(
@@ -92,15 +92,20 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _Chattab() {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.95,
+      width: MediaQuery.of(context).size.width * 0.93,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(30),
         color: Color(0xffeeeeee),
       ),
       child: Row(
         children: [
           Flexible(
             child: TextField(
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                contentPadding: EdgeInsets.only(left: 8),
+              ),
               controller: _textEditingController,
               onSubmitted: _handleSubmitted,
               maxLines: 3,

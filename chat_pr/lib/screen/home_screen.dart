@@ -13,7 +13,6 @@ class HomeScreen extends StatefulWidget {
 
 // HomeScreen UI
 class _HomeScreenState extends State<HomeScreen> {
-
   var isSplash = 1;
   var opacityValue = 0.0;
 
@@ -26,10 +25,9 @@ class _HomeScreenState extends State<HomeScreen> {
   // Delay 1 sec to change screen
   _delay() {
     Future.delayed(Duration(milliseconds: 100), () {
-      setState(() =>
-      {
-        opacityValue = 1.0,
-      });
+      setState(() => {
+            opacityValue = 1.0,
+          });
     });
     Future.delayed(Duration(milliseconds: 1500), () {
       setState(() => {
@@ -41,18 +39,16 @@ class _HomeScreenState extends State<HomeScreen> {
   // HomeScreen Constructor
   @override
   Widget build(BuildContext context) {
-
     // SplashScreen
     if (isSplash == 1) {
       return Scaffold(
           backgroundColor: Color(0xFFFFFFFF),
           body: Center(
-            child: AnimatedOpacity(
-              opacity: opacityValue,
-              duration: Duration(seconds: 1),
-              child: Image.asset('asset/img/SScreen1.png'),
-            )
-          ));
+              child: AnimatedOpacity(
+            opacity: opacityValue,
+            duration: Duration(seconds: 1),
+            child: Image.asset('asset/img/SScreen1.png'),
+          )));
     }
 
     // Home Screen After Splash Screen
@@ -70,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    // 아이콘
+                      // 아이콘
                       width: 274,
                       height: 100,
                       decoration: BoxDecoration(
@@ -85,7 +81,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(height: 130),
                   InkWell(
                     onTap: () {
-                      Press_Chat(context);
+                      Navigator.of(context).push(_createRoute_chat());
+                      //Press_Chat(context);
                     },
                     child: Container(
                       // 버튼
@@ -184,5 +181,22 @@ void Press_Chat(BuildContext context) {
     MaterialPageRoute(
       builder: (context) => ChatPage(),
     ),
+  );
+}
+
+Route _createRoute_chat() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => ChatPage(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      var begin = Offset(0.0, 1.0);
+      var end = Offset.zero;
+      var curve = Curves.ease;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
   );
 }
