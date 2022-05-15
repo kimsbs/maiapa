@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -9,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 double _lat = 0;
 double _lng = 0;
 bool   _flg = false;
+Map<MarkerId,Marker> markers = <MarkerId,Marker>{};
 
 void Press_Map(BuildContext context, String text) async {
   Navigator.push(
@@ -49,16 +49,27 @@ class _googleMapState extends State<googleMap> {
     strokeWidth: 1,
   );
 
-  static Marker marker = Marker(
-    markerId: MarkerId('marker'),
-    position: initialLocation,
-  );
+
+  //marker Set 집합을 만들어 marker를 저장한뒤, build에서 marker Set 내 marker들을 전부 추가하는 방식
+  //현재는 DB에서 거리 계산하는 값을 가져오지 않아 position LatLng에 현재위치에서 임의의 거리에 있는 여러개 값들이 나오게끔 하는 식으로만 구현
+  void setMarker(){
+    for(int i=0;i<10;i++){
+      Marker marker=Marker(
+        markerId: MarkerId(i.toString()),
+        position: LatLng(initialLocation.latitude+(i*0.0001),initialLocation.longitude+(i*0.0001)),
+      );
+      MarkerId markerId = MarkerId(i.toString());
+      markers[markerId]=marker;
+    }
+  }
 
   Future<void> getLocation() async {
     final location = await Geolocator.getCurrentPosition();
 
     _lat = location.latitude;
     _lng = location.longitude;
+    setMarker();
+
     if(_flg == false) {
       setState(() {
         _flg = true;
@@ -77,7 +88,7 @@ class _googleMapState extends State<googleMap> {
           myLocationEnabled: true,
           myLocationButtonEnabled: false,
           circles: Set.from([circle]),
-          markers: Set.from([marker]),
+          markers: Set<Marker>.of(markers.values),
           onMapCreated: onMapCreated,
         ),
     );
