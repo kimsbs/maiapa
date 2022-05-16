@@ -11,9 +11,10 @@ class ChatMessage extends StatelessWidget {
 
   final String txt;
   final bool type;
-  final Chat_padding_val = EdgeInsets.all(5);
+  final Chat_padding_val = EdgeInsets.all(6);
   final Chat_margin_val = const EdgeInsets.only(top: 3);
   final double radious_value = 10;
+  final double text_font_size = 13;
 
   void _loadCSV() async {
     final _rawData = await rootBundle.loadString("asset/csv/test-1.csv");
@@ -60,7 +61,7 @@ class ChatMessage extends StatelessWidget {
             //봇의 이름
             const Text("마이아파", style: TextStyle(fontWeight: FontWeight.bold)),
             //output 의 종류에 따라 Map버튼 유무.
-            d_val.type < 3 ? _Case_Map(context, d_val) : _Non_Case_Map(context, d_val.name)
+            d_val.type == 1 ? _Case_Map(context, d_val) : _Non_Case_Map(context, d_val.name)
           ],
         ),
       ),
@@ -80,7 +81,9 @@ class ChatMessage extends StatelessWidget {
               child: Container(
                 padding: Chat_padding_val,
                 decoration: _Chat_Decoration(),
-                child: Text(txt),
+                child: Text(txt,
+                  style: TextStyle(fontSize: text_font_size),
+                ),
               ),
             ),
           ],
@@ -97,7 +100,9 @@ class ChatMessage extends StatelessWidget {
         padding: Chat_padding_val,
         margin: Chat_margin_val,
         decoration: _Chat_Decoration(),
-        child: Text(output),
+        child: Text(output,
+          style: TextStyle(fontSize: text_font_size),
+        ),
       ),
     );
   }
@@ -112,7 +117,9 @@ class ChatMessage extends StatelessWidget {
         decoration: _Chat_Decoration(),
         child: Column(
           children: [
-            Text("$txt 를 검색한 결과입니다."),
+            Text("$txt를 검색한 결과입니다.",
+              style: TextStyle(fontSize: text_font_size),
+            ),
             OutlinedButton(
               child: const Text("지도에서 보기"),
               style: OutlinedButton.styleFrom(primary: Colors.green),
