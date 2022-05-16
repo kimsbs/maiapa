@@ -1,5 +1,7 @@
 import 'package:chat_pr/value_and_struct.dart';
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'check_valid.dart';
 import 'map_page.dart';
@@ -13,8 +15,20 @@ class ChatMessage extends StatelessWidget {
   final Chat_margin_val = const EdgeInsets.only(top: 3);
   final double radious_value = 10;
 
+  void _loadCSV() async {
+    final _rawData = await rootBundle.loadString("asset/csv/test-1.csv");
+    List<List<dynamic>> _listData =
+    const CsvToListConverter().convert(_rawData);
+    if(diagnosis.isEmpty) {
+        csv_data = _listData;
+      csv_data.forEach((element) {
+        diagnosis.add(element[0].split(';'));
+      });
+    }
+  }
+
   Widget build(BuildContext context) {
-    //현재 화면의 가로길이
+    _loadCSV();
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10.0),
       child: Row(

@@ -24,3 +24,6 @@ class Disease{
     this.name = name;
   }
 }
+
+List<List<dynamic>> csv_data = [];
+List<List<String>> diagnosis = [];
