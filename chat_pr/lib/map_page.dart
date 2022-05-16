@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:chat_pr/value_and_struct.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -10,14 +10,14 @@ double _lng = 0;
 bool _flg = false;
 Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
-void Press_Map(BuildContext context, String text) async {
-  Navigator.of(context).push(_createRoute_map(text));
+void Press_Map(BuildContext context, Disease d_val) async {
+  Navigator.of(context).push(_createRoute_map(d_val));
 }
 
-Route _createRoute_map(String text) {
+Route _createRoute_map(Disease d_val) {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) => googleMap(
-      text: text,
+      d_val: d_val,
     ),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       var begin = Offset(0.0, 1.0);
@@ -35,13 +35,18 @@ Route _createRoute_map(String text) {
 
 class googleMap extends StatefulWidget {
   //text == 질병 혹은 진단과
-  googleMap({required text});
+  googleMap({required this.d_val});
 
+  Disease d_val;
   @override
-  State<googleMap> createState() => _googleMapState();
+  State<googleMap> createState() => _googleMapState(d_val: d_val);
 }
 
 class _googleMapState extends State<googleMap> {
+  _googleMapState({required this.d_val});
+
+  Disease d_val;
+
   GoogleMapController? mapController;
 
   final double zoom_value = 17.5;
@@ -81,10 +86,10 @@ class _googleMapState extends State<googleMap> {
   Future<void> getLocation() async {
     final location = await Geolocator.getCurrentPosition();
 
+    print(d_val.name);
     _lat = location.latitude;
     _lng = location.longitude;
     setMarker();
-
     if (_flg == false) {
       setState(() {
         _flg = true;
@@ -94,7 +99,6 @@ class _googleMapState extends State<googleMap> {
 
   @override
   Widget build(BuildContext context) {
-    getLocation();
     return Scaffold(
       appBar: renderAppBar(),
       body: _flg == false
@@ -116,6 +120,7 @@ class _googleMapState extends State<googleMap> {
   }
 
   AppBar renderAppBar() {
+    getLocation();
     return AppBar(
       title: const Center(
         child: Text(
@@ -144,11 +149,13 @@ class _googleMapState extends State<googleMap> {
       return;
     }
     final location = await Geolocator.getCurrentPosition();
-    mapController!.animateCamera(CameraUpdate.newLatLng(
-      LatLng(
-        location.latitude,
-        location.longitude,
+    mapController!.animateCamera(
+      CameraUpdate.newLatLng(
+        LatLng(
+          location.latitude,
+          location.longitude,
+        ),
       ),
-    ));
+    );
   }
 }

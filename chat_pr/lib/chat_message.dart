@@ -1,5 +1,5 @@
+import 'package:chat_pr/value_and_struct.dart';
 import 'package:flutter/material.dart';
-import 'package:tuple/tuple.dart';
 
 import 'check_valid.dart';
 import 'map_page.dart';
@@ -27,9 +27,10 @@ class ChatMessage extends StatelessWidget {
   //응답 메세지
   @override
   List<Widget> responseMessage(context) {
-    final Tuple2<String, int> output;
-    //Is_rightInput에서 들어온 text판별 정상유무는 bool에 저장.
-    output = Is_rightInput(txt);
+    Disease d_val;
+
+    //check_valid에서 들어온 text판별 정상유무는 type에 저장.
+    d_val = check_valid(txt);
     return <Widget>[
       //봇의 이미지.
       Container(
@@ -45,7 +46,7 @@ class ChatMessage extends StatelessWidget {
             //봇의 이름
             const Text("마이아파", style: TextStyle(fontWeight: FontWeight.bold)),
             //output 의 종류에 따라 Map버튼 유무.
-            output.item2 < 4 ? _Case_Map(context, output) : _Non_Case_Map(context, output.item1)
+            d_val.type < 3 ? _Case_Map(context, d_val) : _Non_Case_Map(context, d_val.name)
           ],
         ),
       ),
@@ -88,7 +89,7 @@ class ChatMessage extends StatelessWidget {
   }
 
   //응답메세지가 지도 버튼을 출력하는 경우.
-  Widget _Case_Map(BuildContext context, Tuple2<String, int> output) {
+  Widget _Case_Map(BuildContext context, Disease output) {
     return ConstrainedBox(
       constraints: _Chat_Width_Control(context),
       child: Container(
@@ -102,7 +103,7 @@ class ChatMessage extends StatelessWidget {
               child: const Text("지도에서 보기"),
               style: OutlinedButton.styleFrom(primary: Colors.green),
               onPressed: () {
-                Press_Map(context, txt);
+                Press_Map(context, output);
               },
             ),
           ],
