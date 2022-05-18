@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:chat_pr/chat_page.dart';
+import 'package:chat_pr/log_page.dart';
 
 // Call _HomeScreenState()
 class HomeScreen extends StatefulWidget {
@@ -124,6 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(height: 10),
                   InkWell(
                     onTap: () {
+                      Navigator.of(context).push(_createRoute_log());
                       //Go_to_Log(context);
                     },
                     child: Container(
@@ -189,6 +191,33 @@ Route _createRoute_chat() {
     pageBuilder: (context, animation, secondaryAnimation) => ChatPage(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       var begin = Offset(0.0, 1.0);
+      var end = Offset.zero;
+      var curve = Curves.ease;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
+}
+
+void Press_Log(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => logPage(),
+    ),
+  );
+}
+
+Route _createRoute_log() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => logPage(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      var begin = Offset(0.0, 1.0);
+
       var end = Offset.zero;
       var curve = Curves.ease;
 

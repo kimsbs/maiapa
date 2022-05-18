@@ -10,6 +10,7 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   final TextEditingController _textEditingController = TextEditingController();
   final List<ChatMessage> _chats = [];
+  final DateTime historyDay = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -33,15 +34,17 @@ class _ChatPageState extends State<ChatPage> {
       body: Column(
         children: [
           _highlightbar(),
-          Flexible(
+          Expanded(
             child: Container(
               color: Color(0xffeeeeee),
-              child: ListView.builder(
+              child:
+                ListView.builder(
                 padding: const EdgeInsets.all(8.0),
                 reverse: true,
                 itemBuilder: (_, int index) => _chats[index],
                 itemCount: _chats.length,
               ),
+
             ),
           ),
           Container(
