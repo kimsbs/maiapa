@@ -134,14 +134,10 @@ class _googleMapState extends State<googleMap> {
           print("YPos 값 이상 발견");
         }
       }
+
+      setState(() {MapFlg = true;});
     } catch (e) {
       print(e);
-    }
-
-    if (MapFlg == false) {
-      setState(() {
-        MapFlg = true;
-      });
     }
   }
 
