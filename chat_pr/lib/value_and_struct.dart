@@ -1,3 +1,5 @@
+import 'package:geolocator/geolocator.dart';
+
 const List<List<String>> disease_map = [
   ["00", "일반의"],
   ["01", "내과"],
@@ -63,5 +65,18 @@ class Disease {
   }
 }
 
+
+Future<void> getLocation() async {
+  final location = await Geolocator.getCurrentPosition();
+
+  MapFlg = false;
+  lat = location.latitude;
+  lng = location.longitude;
+}
+
 List<List<dynamic>> csv_data = [];
 List<List<String>> diagnosis = [];
+
+double lat = 0;
+double lng = 0;
+bool MapFlg = false;

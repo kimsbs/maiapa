@@ -7,9 +7,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-double _lat = 0;
-double _lng = 0;
-bool _flg = false;
 Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 HospInfo? hospInfo;
 
@@ -72,7 +69,7 @@ class _googleMapState extends State<googleMap> {
 
   final double zoom_value = 17.5;
 
-  static LatLng initialLocation = LatLng(_lat, _lng);
+  static LatLng initialLocation = LatLng(lat, lng);
 
   static CameraPosition initialPosition = CameraPosition(
     target: initialLocation,
@@ -104,9 +101,9 @@ class _googleMapState extends State<googleMap> {
     String apiAddr = "http://apis.data.go.kr/B551182/hospInfoService1/getHospBasisList1"
         +"?ServiceKey=u96Y%2FJMiV2PQH9eebpHHOGTDnvn%2BgLPsZkdYmDk%2BhsSK2Kzie24zvEuZRacAG%2FucPEIlUkwEUzD8DjNIKiDuRQ%3D%3D"
         +"&numOfRows=200&xPos="
-        +_lng.toString()
+        +lng.toString()
         +"&yPos="
-        +_lat.toString()
+        +lat.toString()
         +"&radius=500&_type=json";
 
     http.Response response;//api 호출의 결과를 받기 위한 변수
@@ -125,7 +122,6 @@ class _googleMapState extends State<googleMap> {
           lat: data1["response"]["body"]["items"]["item"][0]["YPos"],
       );*/
 
-
       for(int i = 0 ; i < data1["response"]["body"]["items"]["item"].length ; i++){
         if((data1["response"]["body"]["items"]["item"][i]["YPos"] is double)
             &&(data1["response"]["body"]["items"]["item"][i]["XPos"] is double)) {
@@ -142,30 +138,33 @@ class _googleMapState extends State<googleMap> {
       print(e);
     }
 
-
-  }
-
-  Future<void> getLocation() async {
-    final location = await Geolocator.getCurrentPosition();
-
-    print(d_val.name);
-    _lat = location.latitude;
-    _lng = location.longitude;
-
-    getHospInfo();
-
-    if (_flg == false) {
+    if (MapFlg == false) {
       setState(() {
-        _flg = true;
+        MapFlg = true;
       });
     }
   }
 
   @override
+  initState() {
+    // 부모의 initState호출
+    super.initState();
+    // 이 클래스애 리스너 추가
+    getHospInfo();
+  }
+  // Future<void> getLocation() async {
+  //   final location = await Geolocator.getCurrentPosition();
+  //
+  //   print(d_val.name);
+  //   lat = location.latitude;
+  //   lng = location.longitude;
+  // }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: renderAppBar(),
-      body: _flg == false
+      body: MapFlg == false
           ? Center(child: CircularProgressIndicator())
           : GoogleMap(
         mapType: MapType.normal,
@@ -184,7 +183,6 @@ class _googleMapState extends State<googleMap> {
   }
 
   AppBar renderAppBar() {
-    getLocation();
     return AppBar(
       title: const Center(
         child: Text(

@@ -109,6 +109,7 @@ class ChatMessage extends StatelessWidget {
 
   //응답메세지가 지도 버튼을 출력하는 경우.
   Widget _Case_Map(BuildContext context, Disease output) {
+    getLocation();
     return ConstrainedBox(
       constraints: _Chat_Width_Control(context),
       child: Container(
