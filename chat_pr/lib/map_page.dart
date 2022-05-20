@@ -4,11 +4,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 double _lat = 0;
 double _lng = 0;
 bool _flg = false;
 Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+HospInfo? hospInfo;
 
 void Press_Map(BuildContext context, Disease d_val) async {
   Navigator.of(context).push(_createRoute_map(d_val));
@@ -31,6 +34,24 @@ Route _createRoute_map(Disease d_val) {
       );
     },
   );
+}
+
+class HospInfo {
+  final String name;//병원명
+  final String addr;//주소
+  final String phNum;//전화번호
+  final String homepg;//홈페이지
+  final double lng;//경도
+  final double lat;//위도
+
+  HospInfo({
+    required this.name,
+    required this.addr,
+    required this.phNum,
+    required this.homepg,
+    required this.lng,
+    required this.lat,
+  });
 }
 
 class googleMap extends StatefulWidget {
@@ -69,18 +90,59 @@ class _googleMapState extends State<googleMap> {
     strokeWidth: 1,
   );
 
-  //marker Set 집합을 만들어 marker를 저장한뒤, build에서 marker Set 내 marker들을 전부 추가하는 방식
-  //현재는 DB에서 거리 계산하는 값을 가져오지 않아 position LatLng에 현재위치에서 임의의 거리에 있는 여러개 값들이 나오게끔 하는 식으로만 구현
-  void setMarker() {
-    for (int i = 0; i < 10; i++) {
-      Marker marker = Marker(
-        markerId: MarkerId(i.toString()),
-        position: LatLng(initialLocation.latitude + (i * 0.0001),
-            initialLocation.longitude + (i * 0.0001)),
-      );
-      MarkerId markerId = MarkerId(i.toString());
-      markers[markerId] = marker;
+  void setMarker(double lat,double lng,int index) {
+    Marker marker = Marker(
+      markerId: MarkerId(index.toString()),
+      position: LatLng(lat,lng),
+    );
+    MarkerId markerId = MarkerId(index.toString());
+    markers[markerId] = marker;
+  }
+
+  Future<void> getHospInfo() async {
+    //api 호출을 위한 주소
+    String apiAddr = "http://apis.data.go.kr/B551182/hospInfoService1/getHospBasisList1"
+        +"?ServiceKey=u96Y%2FJMiV2PQH9eebpHHOGTDnvn%2BgLPsZkdYmDk%2BhsSK2Kzie24zvEuZRacAG%2FucPEIlUkwEUzD8DjNIKiDuRQ%3D%3D"
+        +"&numOfRows=200&xPos="
+        +_lng.toString()
+        +"&yPos="
+        +_lat.toString()
+        +"&radius=500&_type=json";
+
+    http.Response response;//api 호출의 결과를 받기 위한 변수
+    var data1;//api 호출을 통해 받은 정보를 json으로 바꾼 결과를 저장한다.
+    try {
+      response = await http.get(Uri.parse(apiAddr));//필요 api 호출
+      data1 = jsonDecode(utf8.decode(response.bodyBytes));
+
+      /*
+      hospInfo = HospInfo(
+          name: data1["response"]["body"]["items"]["item"][0]["yadmNm"],
+          addr: data1["response"]["body"]["items"]["item"][0]["addr"],
+          phNum: data1["response"]["body"]["items"]["item"][0]["telno"],
+          homepg: data1["response"]["body"]["items"]["item"][0]["hospUrl"],
+          lng: data1["response"]["body"]["items"]["item"][0]["XPos"],
+          lat: data1["response"]["body"]["items"]["item"][0]["YPos"],
+      );*/
+
+
+      for(int i = 0 ; i < data1["response"]["body"]["items"]["item"].length ; i++){
+        if((data1["response"]["body"]["items"]["item"][i]["YPos"] is double)
+            &&(data1["response"]["body"]["items"]["item"][i]["XPos"] is double)) {
+          setMarker(data1["response"]["body"]["items"]["item"][i]["YPos"], data1["response"]["body"]["items"]["item"][i]["XPos"],i);
+        }
+        else if(data1["response"]["body"]["items"]["item"][i]["YPos"] is double){
+          print("XPos 값 이상 발견");
+        }
+        else if(data1["response"]["body"]["items"]["item"][i]["XPos"] is double){
+          print("YPos 값 이상 발견");
+        }
+      }
+    } catch (e) {
+      print(e);
     }
+
+
   }
 
   Future<void> getLocation() async {
@@ -89,7 +151,9 @@ class _googleMapState extends State<googleMap> {
     print(d_val.name);
     _lat = location.latitude;
     _lng = location.longitude;
-    setMarker();
+
+    getHospInfo();
+
     if (_flg == false) {
       setState(() {
         _flg = true;
@@ -104,14 +168,14 @@ class _googleMapState extends State<googleMap> {
       body: _flg == false
           ? Center(child: CircularProgressIndicator())
           : GoogleMap(
-              mapType: MapType.normal,
-              initialCameraPosition: initialPosition,
-              myLocationEnabled: true,
-              myLocationButtonEnabled: false,
-              circles: Set.from([circle]),
-              markers: Set<Marker>.of(markers.values),
-              onMapCreated: onMapCreated,
-            ),
+        mapType: MapType.normal,
+        initialCameraPosition: initialPosition,
+        myLocationEnabled: true,
+        myLocationButtonEnabled: false,
+        circles: Set.from([circle]),
+        markers: Set<Marker>.of(markers.values),
+        onMapCreated: onMapCreated,
+      ),
     );
   }
 
