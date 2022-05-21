@@ -8,9 +8,14 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-HospInfo? hospInfo;
+double lat = 0;
+double lng = 0;
+bool flag=false;
 
 void Press_Map(BuildContext context, Disease d_val) async {
+  if(flag==false){
+    await getHospInfo();
+  }
   Navigator.of(context).push(_createRoute_map(d_val));
 }
 
@@ -33,22 +38,66 @@ Route _createRoute_map(Disease d_val) {
   );
 }
 
-class HospInfo {
-  final String name;//병원명
-  final String addr;//주소
-  final String phNum;//전화번호
-  final String homepg;//홈페이지
-  final double lng;//경도
-  final double lat;//위도
+Future<void> getLocation() async {
+  final location = await Geolocator.getCurrentPosition();
 
-  HospInfo({
-    required this.name,
-    required this.addr,
-    required this.phNum,
-    required this.homepg,
-    required this.lng,
-    required this.lat,
-  });
+  MapFlg = false;
+  lat = location.latitude;
+  lng = location.longitude;
+}
+
+Future<void> setMarker(double lat,double lng,int index, String hospName,String addr,String telNo) async {
+  Marker marker = Marker(
+    markerId: MarkerId(index.toString()),
+    position: LatLng(lat,lng),
+    infoWindow: InfoWindow( //popup info
+      title: hospName,
+      snippet: addr+'\n'+telNo,
+    ).,
+  );
+  MarkerId markerId = MarkerId(index.toString());
+  markers[markerId] = marker;
+}
+
+Future<void> getHospInfo() async {
+  await getLocation();
+  //api 호출을 위한 주소
+  String apiAddr = "http://apis.data.go.kr/B551182/hospInfoService1/getHospBasisList1"
+      +"?ServiceKey=u96Y%2FJMiV2PQH9eebpHHOGTDnvn%2BgLPsZkdYmDk%2BhsSK2Kzie24zvEuZRacAG%2FucPEIlUkwEUzD8DjNIKiDuRQ%3D%3D"
+      +"&numOfRows=200&xPos="
+      +lng.toString()
+      +"&yPos="
+      +lat.toString()
+      +"&radius=1000&_type=json";
+
+  http.Response response;//api 호출의 결과를 받기 위한 변수
+  var data1;//api 호출을 통해 받은 정보를 json으로 바꾼 결과를 저장한다.
+  try {
+    response = await http.get(Uri.parse(apiAddr));//필요 api 호출
+    data1 = jsonDecode(utf8.decode(response.bodyBytes));
+
+    for(int i = 0 ; i < data1["response"]["body"]["items"]["item"].length ; i++){
+      if((data1["response"]["body"]["items"]["item"][i]["YPos"] is double)
+          &&(data1["response"]["body"]["items"]["item"][i]["XPos"] is double)) {
+        await setMarker(data1["response"]["body"]["items"]["item"][i]["YPos"],
+            data1["response"]["body"]["items"]["item"][i]["XPos"],
+            i,
+            data1["response"]["body"]["items"]["item"][i]["yadmNm"],
+            data1["response"]["body"]["items"]["item"][i]["addr"],
+            data1["response"]["body"]["items"]["item"][i]["telno"],);
+      }
+      else if(data1["response"]["body"]["items"]["item"][i]["YPos"] is double){
+        print("XPos 값 이상 발견");
+      }
+      else if(data1["response"]["body"]["items"]["item"][i]["XPos"] is double){
+        print("YPos 값 이상 발견");
+      }
+    }
+  } catch (e) {
+    print(e);
+  }
+
+  flag=true;
 }
 
 class googleMap extends StatefulWidget {
@@ -87,80 +136,11 @@ class _googleMapState extends State<googleMap> {
     strokeWidth: 1,
   );
 
-  void setMarker(double lat,double lng,int index) {
-    Marker marker = Marker(
-      markerId: MarkerId(index.toString()),
-      position: LatLng(lat,lng),
-    );
-    MarkerId markerId = MarkerId(index.toString());
-    markers[markerId] = marker;
-  }
-
-  Future<void> getHospInfo() async {
-    //api 호출을 위한 주소
-    String apiAddr = "http://apis.data.go.kr/B551182/hospInfoService1/getHospBasisList1"
-        +"?ServiceKey=u96Y%2FJMiV2PQH9eebpHHOGTDnvn%2BgLPsZkdYmDk%2BhsSK2Kzie24zvEuZRacAG%2FucPEIlUkwEUzD8DjNIKiDuRQ%3D%3D"
-        +"&numOfRows=200&xPos="
-        +lng.toString()
-        +"&yPos="
-        +lat.toString()
-        +"&radius=500&_type=json";
-
-    http.Response response;//api 호출의 결과를 받기 위한 변수
-    var data1;//api 호출을 통해 받은 정보를 json으로 바꾼 결과를 저장한다.
-    try {
-      response = await http.get(Uri.parse(apiAddr));//필요 api 호출
-      data1 = jsonDecode(utf8.decode(response.bodyBytes));
-
-      /*
-      hospInfo = HospInfo(
-          name: data1["response"]["body"]["items"]["item"][0]["yadmNm"],
-          addr: data1["response"]["body"]["items"]["item"][0]["addr"],
-          phNum: data1["response"]["body"]["items"]["item"][0]["telno"],
-          homepg: data1["response"]["body"]["items"]["item"][0]["hospUrl"],
-          lng: data1["response"]["body"]["items"]["item"][0]["XPos"],
-          lat: data1["response"]["body"]["items"]["item"][0]["YPos"],
-      );*/
-
-      for(int i = 0 ; i < data1["response"]["body"]["items"]["item"].length ; i++){
-        if((data1["response"]["body"]["items"]["item"][i]["YPos"] is double)
-            &&(data1["response"]["body"]["items"]["item"][i]["XPos"] is double)) {
-          setMarker(data1["response"]["body"]["items"]["item"][i]["YPos"], data1["response"]["body"]["items"]["item"][i]["XPos"],i);
-        }
-        else if(data1["response"]["body"]["items"]["item"][i]["YPos"] is double){
-          print("XPos 값 이상 발견");
-        }
-        else if(data1["response"]["body"]["items"]["item"][i]["XPos"] is double){
-          print("YPos 값 이상 발견");
-        }
-      }
-
-      setState(() {MapFlg = true;});
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  @override
-  initState() {
-    // 부모의 initState호출
-    super.initState();
-    // 이 클래스애 리스너 추가
-    getHospInfo();
-  }
-  // Future<void> getLocation() async {
-  //   final location = await Geolocator.getCurrentPosition();
-  //
-  //   print(d_val.name);
-  //   lat = location.latitude;
-  //   lng = location.longitude;
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: renderAppBar(),
-      body: MapFlg == false
+      body: flag == false
           ? Center(child: CircularProgressIndicator())
           : GoogleMap(
         mapType: MapType.normal,
