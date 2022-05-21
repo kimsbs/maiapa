@@ -14,7 +14,34 @@ bool flag=false;
 
 void Press_Map(BuildContext context, Disease d_val) async {
   if(flag==false){
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (_) {
+          return Dialog(
+            // The background color
+            backgroundColor: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  // The loading indicator
+                  CircularProgressIndicator(),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  // Some text
+                  Text('Loading...')
+                ],
+              ),
+            ),
+          );
+        }
+    );
     await getHospInfo(d_val);
+    Navigator.of(context).pop();
+
   }
   Navigator.of(context).push(_createRoute_map(d_val));
 }
@@ -56,7 +83,7 @@ Future<void> setMarker(double lat,double lng,int index, String hospName,String a
         snippet: addr+telNo,
       ),
       onTap: (){
-
+        print("Marker");
       },
     );
     MarkerId markerId = MarkerId(index.toString());
@@ -71,7 +98,7 @@ Future<void> setMarker(double lat,double lng,int index, String hospName,String a
         snippet: addr,
       ),
       onTap: (){
-
+        print("Marker");
       },
     );
     MarkerId markerId = MarkerId(index.toString());
@@ -84,7 +111,7 @@ Future<void> getHospInfo(Disease d_val) async {
   //api 호출을 위한 주소
   String apiAddr = "http://apis.data.go.kr/B551182/hospInfoService1/getHospBasisList1"
       +"?ServiceKey=u96Y%2FJMiV2PQH9eebpHHOGTDnvn%2BgLPsZkdYmDk%2BhsSK2Kzie24zvEuZRacAG%2FucPEIlUkwEUzD8DjNIKiDuRQ%3D%3D"
-      +"&numOfRows=200&xPos="
+      +"&numOfRows=2000&xPos="
       +lng.toString()
       +"&yPos="
       +lat.toString()
@@ -96,6 +123,9 @@ Future<void> getHospInfo(Disease d_val) async {
 
   http.Response response;//api 호출의 결과를 받기 위한 변수
   var data1;//api 호출을 통해 받은 정보를 json으로 바꾼 결과를 저장한다.
+  response = await http.get(Uri.parse(apiAddr));//필요 api 호출
+  data1 = jsonDecode(utf8.decode(response.bodyBytes));
+
   try {
     response = await http.get(Uri.parse(apiAddr));//필요 api 호출
     data1 = jsonDecode(utf8.decode(response.bodyBytes));
