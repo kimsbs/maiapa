@@ -14,7 +14,7 @@ bool flag=false;
 
 void Press_Map(BuildContext context, Disease d_val) async {
   if(flag==false){
-    await getHospInfo();
+    await getHospInfo(d_val);
   }
   Navigator.of(context).push(_createRoute_map(d_val));
 }
@@ -46,20 +46,40 @@ Future<void> getLocation() async {
   lng = location.longitude;
 }
 
-Future<void> setMarker(double lat,double lng,int index, String hospName,String addr,String telNo) async {
-  Marker marker = Marker(
-    markerId: MarkerId(index.toString()),
-    position: LatLng(lat,lng),
-    infoWindow: InfoWindow( //popup info
-      title: hospName,
-      snippet: addr+'\n'+telNo,
-    ).,
-  );
-  MarkerId markerId = MarkerId(index.toString());
-  markers[markerId] = marker;
+Future<void> setMarker(double lat,double lng,int index, String hospName,String addr,var telNo) async {
+  if(telNo.runtimeType == String && telNo != ""){
+    Marker marker = Marker(
+      markerId: MarkerId(index.toString()),
+      position: LatLng(lat,lng),
+      infoWindow: InfoWindow( //popup info
+        title: hospName,
+        snippet: addr+telNo,
+      ),
+      onTap: (){
+
+      },
+    );
+    MarkerId markerId = MarkerId(index.toString());
+    markers[markerId] = marker;
+  }
+  else{
+    Marker marker = Marker(
+      markerId: MarkerId(index.toString()),
+      position: LatLng(lat,lng),
+      infoWindow: InfoWindow( //popup info
+        title: hospName,
+        snippet: addr,
+      ),
+      onTap: (){
+
+      },
+    );
+    MarkerId markerId = MarkerId(index.toString());
+    markers[markerId] = marker;
+  }
 }
 
-Future<void> getHospInfo() async {
+Future<void> getHospInfo(Disease d_val) async {
   await getLocation();
   //api 호출을 위한 주소
   String apiAddr = "http://apis.data.go.kr/B551182/hospInfoService1/getHospBasisList1"
@@ -68,7 +88,11 @@ Future<void> getHospInfo() async {
       +lng.toString()
       +"&yPos="
       +lat.toString()
+      +"&dgsbjtCd="
+      +d_val.name
       +"&radius=1000&_type=json";
+
+  print(d_val.name);
 
   http.Response response;//api 호출의 결과를 받기 위한 변수
   var data1;//api 호출을 통해 받은 정보를 json으로 바꾼 결과를 저장한다.
