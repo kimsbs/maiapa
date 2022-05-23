@@ -1,5 +1,4 @@
 import 'package:chat_pr/value_and_struct.dart';
-import 'package:flutter/cupertino.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -73,34 +72,29 @@ Future<void> getLocation() async {
   lng = location.longitude;
 }
 
-Future<void> setMarker(double lat,double lng,int index, String hospName,String addr,var telNo) async {
-  if(telNo.runtimeType == String && telNo != ""){
-    Marker marker = Marker(
-      markerId: MarkerId(index.toString()),
-      position: LatLng(lat,lng),
-      infoWindow: InfoWindow( //popup info
-        title: hospName,
-        snippet: addr+telNo,
-      ),
-      onTap: (){
+Future<void> setMarker(double lat,double lng,int index, String hospName,String addr,var telNo, BitmapDescriptor myMarker) async {
+  Marker marker_set(String tmp){
+    return Marker(
+        markerId: MarkerId(index.toString()),
+        position: LatLng(lat,lng),
+        infoWindow: InfoWindow( //popup info
+          title: hospName,
+          snippet: tmp,
+        ),
+        icon : myMarker,
+        onTap: (){
         print("Marker");
       },
     );
+  }
+
+  if(telNo.runtimeType == String && telNo != ""){
+    Marker marker = marker_set(addr + telNo);
     MarkerId markerId = MarkerId(index.toString());
     markers[markerId] = marker;
   }
   else{
-    Marker marker = Marker(
-      markerId: MarkerId(index.toString()),
-      position: LatLng(lat,lng),
-      infoWindow: InfoWindow( //popup info
-        title: hospName,
-        snippet: addr,
-      ),
-      onTap: (){
-        print("Marker");
-      },
-    );
+    Marker marker = marker_set(addr);
     MarkerId markerId = MarkerId(index.toString());
     markers[markerId] = marker;
   }
@@ -108,6 +102,10 @@ Future<void> setMarker(double lat,double lng,int index, String hospName,String a
 
 Future<void> getHospInfo(Disease d_val) async {
   await getLocation();
+  BitmapDescriptor myMarker = await BitmapDescriptor.fromAssetImage(
+    //now img 50px. 꼴리는 거로 바꾸세욘,..,
+      const ImageConfiguration(), "asset/img/r_marker.png");
+
   //api 호출을 위한 주소
   String apiAddr = "http://apis.data.go.kr/B551182/hospInfoService1/getHospBasisList1"
       +"?ServiceKey=u96Y%2FJMiV2PQH9eebpHHOGTDnvn%2BgLPsZkdYmDk%2BhsSK2Kzie24zvEuZRacAG%2FucPEIlUkwEUzD8DjNIKiDuRQ%3D%3D"
@@ -119,7 +117,7 @@ Future<void> getHospInfo(Disease d_val) async {
       +d_val.name
       +"&radius=1000&_type=json";
 
-  print(d_val.name);
+  print(d_val.searched);
 
   http.Response response;//api 호출의 결과를 받기 위한 변수
   var data1;//api 호출을 통해 받은 정보를 json으로 바꾼 결과를 저장한다.
@@ -138,7 +136,7 @@ Future<void> getHospInfo(Disease d_val) async {
             i,
             data1["response"]["body"]["items"]["item"][i]["yadmNm"],
             data1["response"]["body"]["items"]["item"][i]["addr"],
-            data1["response"]["body"]["items"]["item"][i]["telno"],);
+            data1["response"]["body"]["items"]["item"][i]["telno"], myMarker);
       }
       else if(data1["response"]["body"]["items"]["item"][i]["YPos"] is double){
         print("XPos 값 이상 발견");
@@ -170,13 +168,13 @@ class _googleMapState extends State<googleMap> {
 
   GoogleMapController? mapController;
 
-  final double zoom_value = 17.5;
+  final double zoom_value = 16.5;
 
   static LatLng initialLocation = LatLng(lat, lng);
 
   static CameraPosition initialPosition = CameraPosition(
     target: initialLocation,
-    zoom: 17.5,
+    zoom: 16.5,
   );
 
   static final double distance = 100;

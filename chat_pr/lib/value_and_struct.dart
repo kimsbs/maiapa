@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 
 const List<List<String>> disease_map = [
@@ -54,24 +57,17 @@ const List<List<String>> disease_map = [
 class Disease {
   dynamic type;
   dynamic name;
+  dynamic searched;
 
-  Disease(var name, var type) {
+  Disease(var name, var type, var searched) {
     //type == 1 진단코드를 가지고있음,
     //type == 2 병에 맞는 진단과가 존재하지 않음.
     //tpye == 3 wrong input
     this.type = type;
     //name == disease_code -> api에 검색가능. (tpye가 1인 경우.)
     this.name = name;
+    this.searched = searched;
   }
-}
-
-
-Future<void> getLocation() async {
-  final location = await Geolocator.getCurrentPosition();
-
-  MapFlg = false;
-  lat = location.latitude;
-  lng = location.longitude;
 }
 
 List<List<dynamic>> csv_data = [];
