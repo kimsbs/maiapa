@@ -103,31 +103,33 @@ Future<void> setMarker(double lat,double lng,int index, String hospName,String a
 Future<void> getHospInfo(Disease d_val) async {
   await getLocation();
   BitmapDescriptor myMarker = await BitmapDescriptor.fromAssetImage(
-    //now img 50px. 꼴리는 거로 바꾸세욘,..,
+    //now img 70px. 꼴리는 거로 바꾸세욘,..,
       const ImageConfiguration(), "asset/img/r_marker.png");
-
+  int distance_cnt = -1;
   //api 호출을 위한 주소
-  String apiAddr = "http://apis.data.go.kr/B551182/hospInfoService1/getHospBasisList1"
-      +"?ServiceKey=u96Y%2FJMiV2PQH9eebpHHOGTDnvn%2BgLPsZkdYmDk%2BhsSK2Kzie24zvEuZRacAG%2FucPEIlUkwEUzD8DjNIKiDuRQ%3D%3D"
-      +"&numOfRows=2000&xPos="
-      +lng.toString()
-      +"&yPos="
-      +lat.toString()
-      +"&dgsbjtCd="
-      +d_val.name
-      +"&radius=1000&_type=json";
+  var data1;
 
-  print(d_val.searched);
+  do {
+    String apiAddr = "http://apis.data.go.kr/B551182/hospInfoService1/getHospBasisList1"
+        +
+        "?ServiceKey=u96Y%2FJMiV2PQH9eebpHHOGTDnvn%2BgLPsZkdYmDk%2BhsSK2Kzie24zvEuZRacAG%2FucPEIlUkwEUzD8DjNIKiDuRQ%3D%3D"
+        + "&numOfRows=2000&xPos="
+        + lng.toString()
+        + "&yPos="
+        + lat.toString()
+        + "&dgsbjtCd="
+        + d_val.name
+        + "&radius="
+        + distance[++distance_cnt]
+        + "&_type=json";
 
-  http.Response response;//api 호출의 결과를 받기 위한 변수
-  var data1;//api 호출을 통해 받은 정보를 json으로 바꾼 결과를 저장한다.
-  response = await http.get(Uri.parse(apiAddr));//필요 api 호출
-  data1 = jsonDecode(utf8.decode(response.bodyBytes));
+    http.Response response; //api 호출의 결과를 받기 위한 변수
+    //api 호출을 통해 받은 정보를 json으로 바꾼 결과를 저장한다.
+    response = await http.get(Uri.parse(apiAddr)); //필요 api 호출
+    data1 = jsonDecode(utf8.decode(response.bodyBytes));
+  }while(distance_cnt < 4 && data1["response"]["body"]["totalCount"] == 0);
 
   try {
-    response = await http.get(Uri.parse(apiAddr));//필요 api 호출
-    data1 = jsonDecode(utf8.decode(response.bodyBytes));
-
     for(int i = 0 ; i < data1["response"]["body"]["items"]["item"].length ; i++){
       if((data1["response"]["body"]["items"]["item"][i]["YPos"] is double)
           &&(data1["response"]["body"]["items"]["item"][i]["XPos"] is double)) {

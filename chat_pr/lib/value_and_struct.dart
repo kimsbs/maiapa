@@ -72,6 +72,7 @@ class Disease {
 
 List<List<dynamic>> csv_data = [];
 List<List<String>> diagnosis = [];
+List<String> distance = ["1000", "3000", "5000", "10000"];
 
 double lat = 0;
 double lng = 0;
