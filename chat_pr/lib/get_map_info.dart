@@ -42,13 +42,21 @@ Future<void> setMarker(double lat, double lng, int index, String hospName,
   }
 }
 
-Future<void> data_to_setmarker(var data1) async
-{
+Future<void> data_to_setmarker(var data1) async {
   BitmapDescriptor myMarker = await BitmapDescriptor.fromAssetImage(
-    //now img 70px. 꼴리는 거로 바꾸세욘,..,
-      const ImageConfiguration(), "asset/img/r_marker.png");
+      //now img 70px. 꼴리는 거로 바꾸세욘,..,
+      const ImageConfiguration(),
+      "asset/img/r_marker.png");
 
   if (data1["response"]["body"]["totalCount"] == 1) {
+    if (data1["response"]["body"]["items"]["item"]["YPos"] is String) {
+      data1["response"]["body"]["items"]["item"]["YPos"] =
+          double.parse(data1["response"]["body"]["items"]["item"]["YPos"]);
+    }
+    if (data1["response"]["body"]["items"]["item"]["XPos"] is String) {
+      data1["response"]["body"]["items"]["item"]["XPos"] =
+          double.parse(data1["response"]["body"]["items"]["item"]["XPos"]);
+    }
     if ((data1["response"]["body"]["items"]["item"]["YPos"] is double) &&
         (data1["response"]["body"]["items"]["item"]["XPos"] is double)) {
       await setMarker(
@@ -61,25 +69,34 @@ Future<void> data_to_setmarker(var data1) async
           myMarker);
     }
   } else {
-    for (int i = 0; i < data1["response"]["body"]["items"]["item"].length; i++) {
-      if ((data1["response"]["body"]["items"]["item"][i]["YPos"] is double) &&
-          (data1["response"]["body"]["items"]["item"][i]["XPos"] is double)) {
-        await setMarker(
-            data1["response"]["body"]["items"]["item"][i]["YPos"],
-            data1["response"]["body"]["items"]["item"][i]["XPos"],
-            i,
-            data1["response"]["body"]["items"]["item"][i]["yadmNm"],
-            data1["response"]["body"]["items"]["item"][i]["addr"],
-            data1["response"]["body"]["items"]["item"][i]["telno"],
-            myMarker);
+    print(data1["response"]["body"]["totalCount"]);
+    for (int i = 0;
+        i < data1["response"]["body"]["totalCount"];
+        i++) {
+      if (data1["response"]["body"]["items"]["item"][i]["YPos"] is String) {
+        data1["response"]["body"]["items"]["item"][i]["YPos"] =
+            double.parse(data1["response"]["body"]["items"]["item"][i]["YPos"]);
       }
+      if (data1["response"]["body"]["items"]["item"][i]["XPos"] is String) {
+        data1["response"]["body"]["items"]["item"][i]["XPos"] =
+            double.parse(data1["response"]["body"]["items"]["item"][i]["XPos"]);
+      }
+      await setMarker(
+          data1["response"]["body"]["items"]["item"][i]["YPos"],
+          data1["response"]["body"]["items"]["item"][i]["XPos"],
+          i,
+          data1["response"]["body"]["items"]["item"][i]["yadmNm"],
+          data1["response"]["body"]["items"]["item"][i]["addr"],
+          data1["response"]["body"]["items"]["item"][i]["telno"],
+          myMarker);
     }
   }
 }
 
 Future<void> getHospInfo(Disease d_val) async {
   await getLocation();
-  String Servicekey = "u96Y%2FJMiV2PQH9eebpHHOGTDnvn%2BgLPsZkdYmDk%2BhsSK2Kzie24zvEuZRacAG%2FucPEIlUkwEUzD8DjNIKiDuRQ%3D%3D";
+  String Servicekey =
+      "u96Y%2FJMiV2PQH9eebpHHOGTDnvn%2BgLPsZkdYmDk%2BhsSK2Kzie24zvEuZRacAG%2FucPEIlUkwEUzD8DjNIKiDuRQ%3D%3D";
   int distance_cnt = -1;
   var data1; //api 호출을 위한 주소
   http.Response response; //api 호출의 결과를 받기 위한 변수
