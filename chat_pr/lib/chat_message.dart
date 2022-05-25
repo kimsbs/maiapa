@@ -18,13 +18,12 @@ class ChatMessage extends StatelessWidget {
 
   void _loadCSV() async {
     final _rawData = await rootBundle.loadString("asset/csv/test-1.csv");
-    List<List<dynamic>> _listData =
-    const CsvToListConverter().convert(_rawData);
+    List<List<dynamic>> _listData = const CsvToListConverter().convert(_rawData);
     if(diagnosis.isEmpty) {
         csv_data = _listData;
-      csv_data.forEach((element) {
-        diagnosis.add(element[0].split(';'));
-      });
+        csv_data.forEach((element) {
+          diagnosis.add(element[0].split(';'));
+        });
     }
   }
 
@@ -61,7 +60,7 @@ class ChatMessage extends StatelessWidget {
             //봇의 이름
             const Text("마이아파", style: TextStyle(fontWeight: FontWeight.bold)),
             //output 의 종류에 따라 Map버튼 유무.
-            d_val.type == 1 ? _Case_Map(context, d_val) : _Non_Case_Map(context, d_val.name)
+            d_val.type == 1 ? _Case_Map(context, d_val) : _Non_Case_Map(context, d_val.code)
           ],
         ),
       ),

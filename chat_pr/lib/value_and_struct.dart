@@ -1,9 +1,6 @@
-import 'dart:typed_data';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
-
-const List<List<String>> disease_map = [
+const List<List<String>> disease_code_list = [
   ["00", "일반의"],
   ["01", "내과"],
   ["02", "신경과"],
@@ -56,16 +53,16 @@ const List<List<String>> disease_map = [
 //질병정보 구조체
 class Disease {
   dynamic type;
-  dynamic name;
+  dynamic code;
   dynamic searched;
 
-  Disease(var name, var type, var searched) {
+  Disease(var code, var type, var searched) {
+    //name == disease_code -> api에 검색가능. (tpye가 1인 경우.)
+    this.code = code;
     //type == 1 진단코드를 가지고있음,
     //type == 2 병에 맞는 진단과가 존재하지 않음.
     //tpye == 3 wrong input
     this.type = type;
-    //name == disease_code -> api에 검색가능. (tpye가 1인 경우.)
-    this.name = name;
     this.searched = searched;
   }
 }
@@ -74,6 +71,7 @@ List<List<dynamic>> csv_data = [];
 List<List<String>> diagnosis = [];
 List<String> distance = ["1000", "3000", "5000", "10000"];
 
+Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+bool flag = false;
 double lat = 0;
 double lng = 0;
-bool MapFlg = false;

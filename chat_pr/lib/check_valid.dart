@@ -10,7 +10,7 @@ Disease check_valid(String text) {
     return Disease(init_txt, 4, text);
   }
   //case 1 : 리스트 내부.
-  disease_map.forEach((element) {
+  disease_code_list.forEach((element) {
     if(flag == 0 && element[1] == text) {
       flag = 1;
       disease_code = element[0];
@@ -22,10 +22,10 @@ Disease check_valid(String text) {
       if (flag == 0 && element[0] == text) {
         flag = 2;
         for (i = 1; i <= 3; i++) {
-          disease_map.forEach((maps) {
-            if (flag == 2 && maps[1] == element[i]) {
+          disease_code_list.forEach((dcl) {
+            if (flag == 2 && dcl[1] == element[i]) {
               flag = 1;
-              disease_code = maps[0];
+              disease_code = dcl[0];
             }
           });
         }

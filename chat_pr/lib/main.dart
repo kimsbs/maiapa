@@ -1,9 +1,8 @@
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import 'package:chat_pr/screen/home_screen.dart';
-
 
 void main() {
   runApp(Home());
@@ -19,7 +18,25 @@ class Home extends StatelessWidget {
         primarySwatch: Colors.green,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomePage(),
+      home: Builder(
+        builder: (context) {
+          return AnimatedSplashScreen(
+            splashIconSize: MediaQuery.of(context).size.height,
+            duration: 1000,
+            nextScreen: HomePage(),
+            splash: Center(
+              child: Container(
+                child: AnimatedOpacity(
+                  opacity: 1.0,
+                  duration: Duration(seconds: 1),
+                  child: Image.asset('asset/img/SScreen1.png'),
+                ),
+              ),
+            ),
+          );
+        }
+      ),
+      //HomePage(),
     );
   }
 }
@@ -45,7 +62,7 @@ class _HomePageState extends State<HomePage> {
           if (snapshot.data == '위치 권한이 허가되었습니다.') {
             return Center(
               // Call screen/home_screen/HomeScreen()
-                child: HomeScreen(),
+              child: HomeScreen(),
             );
           }
           return Center(
@@ -81,6 +98,3 @@ class _HomePageState extends State<HomePage> {
     return '위치 권한이 허가되었습니다.';
   }
 }
-
-
-
