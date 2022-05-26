@@ -107,3 +107,4 @@ flutter:
   assets:
     - asset/img/
     - asset/csv/
+    - asset/json/

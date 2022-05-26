@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:chat_pr/chat_message.dart';
 
 class ChatPage extends StatefulWidget {

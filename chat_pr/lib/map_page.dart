@@ -2,7 +2,6 @@ import 'package:chat_pr/value_and_struct.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import 'get_map_info.dart';
 
 void Press_Map(BuildContext context, Disease d_val) async {

@@ -42,7 +42,6 @@ class ChatMessage extends StatelessWidget {
   @override
   List<Widget> responseMessage(context) {
     Disease d_val;
-
     //check_valid에서 들어온 text판별 정상유무는 type에 저장.
     d_val = check_valid(txt);
     return <Widget>[
