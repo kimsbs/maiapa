@@ -13,4 +13,8 @@ class History extends Table{
   RealColumn get lat => real()();
   RealColumn get lng => real()();
 
+  @override
+  Set<Column> get primaryKey => {searchWord, Hospital_name, Hospital_addr};
 }
+
+// cmd : flutter pub run build_runner build

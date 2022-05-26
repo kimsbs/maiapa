@@ -290,7 +290,8 @@ class $HistoryTable extends History with TableInfo<$HistoryTable, HistoryData> {
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
+  Set<GeneratedColumn> get $primaryKey =>
+      {searchWord, Hospital_name, Hospital_addr};
   @override
   HistoryData map(Map<String, dynamic> data, {String? tablePrefix}) {
     return HistoryData.fromData(data,
