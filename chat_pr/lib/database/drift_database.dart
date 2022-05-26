@@ -16,11 +16,13 @@ part 'drift_database.g.dart';
 class LocalDatabase extends _$LocalDatabase{
   LocalDatabase(): super (_openConnection());
 
-  createHistory(HistoryCompanion data) => into(history).insert(data);
+  Future<int> createHistory(HistoryCompanion data) => into(history).insert(data);
 
-  Future<List<HistoryData>> getHistory() => select(history).get();
+  Future<List<HistoryData>> getHistory() => select(history, distinct: true).get();
 
-  Stream<List<HistoryData>> watchHistory() => select(history).watch();
+  Stream<List<HistoryData>> watchHistory() => select(history, distinct: true).watch();
+
+  Future deleteHistory(data){return delete(history).delete(data);}
 
   @override
   int get schemaVersion => 1;

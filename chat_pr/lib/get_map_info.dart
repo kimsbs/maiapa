@@ -30,7 +30,7 @@ Future<void> setMarker(double lat, double lng, int index, String hospName,
       ),
       icon: myMarker,
         onTap: ()async {
-          final key = await GetIt.I<LocalDatabase>().createHistory(
+          await GetIt.I<LocalDatabase>().createHistory(
               HistoryCompanion(
                 searchWord: Value(schWord),
                 Hospital_name: Value(hospName),

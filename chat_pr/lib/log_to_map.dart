@@ -42,6 +42,7 @@ class _logMapState extends State<logMap> {
         markers: Set.from([marker]),
       ),
     );
+
   }
 }
 
