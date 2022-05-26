@@ -20,6 +20,8 @@ class LocalDatabase extends _$LocalDatabase{
 
   Future<List<HistoryData>> getHistory() => select(history).get();
 
+  Stream<List<HistoryData>> watchHistory() => select(history).watch();
+
   @override
   int get schemaVersion => 1;
 }

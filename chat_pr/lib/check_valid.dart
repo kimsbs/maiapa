@@ -25,7 +25,7 @@ Disease check_valid(String text) {
 
   if (text == "/도움") {
     needDiag = 0;
-    return Disease(init_txt, 4, text);
+    return Disease(init_txt, 4, "");
   }
   else if(text == "병원"){
     sex = ""; //성별
@@ -91,7 +91,7 @@ Disease check_valid(String text) {
         return_str = "진단 끝";
         break ;
     }
-    return Disease(return_str, 3, text);
+    return Disease(return_str, 3, "");
   }
 
   //case 1 : 리스트 내부.
@@ -118,10 +118,10 @@ Disease check_valid(String text) {
     });
   }
   if(flag == 1) {
-    return Disease(disease_code, flag, text);
+    return Disease(disease_code, flag, "");
   }
   else if(flag == 2) { //case 3중 매칭된 병원이 없을경우
-    return Disease("$text에 적합한 진단과가 없습니다.", 2, text);
+    return Disease("$text에 적합한 진단과가 없습니다.", 2, "");
   }//default
-  return Disease("질병 혹은 진단과를 입력해 주세요!\nex) 화상, 내과", 3, text);
+  return Disease("질병 혹은 진단과를 입력해 주세요!\nex) 화상, 내과", 3, "");
 }

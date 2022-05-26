@@ -8,15 +8,26 @@ part of 'drift_database.dart';
 
 // ignore_for_file: type=lint
 class HistoryData extends DataClass implements Insertable<HistoryData> {
-  final DateTime date;
+  final String searchWord;
+  final String Hospital_name;
+  final String Hospital_addr;
   final double lat;
   final double lng;
-  HistoryData({required this.date, required this.lat, required this.lng});
+  HistoryData(
+      {required this.searchWord,
+      required this.Hospital_name,
+      required this.Hospital_addr,
+      required this.lat,
+      required this.lng});
   factory HistoryData.fromData(Map<String, dynamic> data, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return HistoryData(
-      date: const DateTimeType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}date'])!,
+      searchWord: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}search_word'])!,
+      Hospital_name: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}hospital_name'])!,
+      Hospital_addr: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}hospital_addr'])!,
       lat: const RealType()
           .mapFromDatabaseResponse(data['${effectivePrefix}lat'])!,
       lng: const RealType()
@@ -26,7 +37,9 @@ class HistoryData extends DataClass implements Insertable<HistoryData> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['date'] = Variable<DateTime>(date);
+    map['search_word'] = Variable<String>(searchWord);
+    map['hospital_name'] = Variable<String>(Hospital_name);
+    map['hospital_addr'] = Variable<String>(Hospital_addr);
     map['lat'] = Variable<double>(lat);
     map['lng'] = Variable<double>(lng);
     return map;
@@ -34,7 +47,9 @@ class HistoryData extends DataClass implements Insertable<HistoryData> {
 
   HistoryCompanion toCompanion(bool nullToAbsent) {
     return HistoryCompanion(
-      date: Value(date),
+      searchWord: Value(searchWord),
+      Hospital_name: Value(Hospital_name),
+      Hospital_addr: Value(Hospital_addr),
       lat: Value(lat),
       lng: Value(lng),
     );
@@ -44,7 +59,9 @@ class HistoryData extends DataClass implements Insertable<HistoryData> {
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return HistoryData(
-      date: serializer.fromJson<DateTime>(json['date']),
+      searchWord: serializer.fromJson<String>(json['searchWord']),
+      Hospital_name: serializer.fromJson<String>(json['Hospital_name']),
+      Hospital_addr: serializer.fromJson<String>(json['Hospital_addr']),
       lat: serializer.fromJson<double>(json['lat']),
       lng: serializer.fromJson<double>(json['lng']),
     );
@@ -53,22 +70,33 @@ class HistoryData extends DataClass implements Insertable<HistoryData> {
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'date': serializer.toJson<DateTime>(date),
+      'searchWord': serializer.toJson<String>(searchWord),
+      'Hospital_name': serializer.toJson<String>(Hospital_name),
+      'Hospital_addr': serializer.toJson<String>(Hospital_addr),
       'lat': serializer.toJson<double>(lat),
       'lng': serializer.toJson<double>(lng),
     };
   }
 
-  HistoryData copyWith({DateTime? date, double? lat, double? lng}) =>
+  HistoryData copyWith(
+          {String? searchWord,
+          String? Hospital_name,
+          String? Hospital_addr,
+          double? lat,
+          double? lng}) =>
       HistoryData(
-        date: date ?? this.date,
+        searchWord: searchWord ?? this.searchWord,
+        Hospital_name: Hospital_name ?? this.Hospital_name,
+        Hospital_addr: Hospital_addr ?? this.Hospital_addr,
         lat: lat ?? this.lat,
         lng: lng ?? this.lng,
       );
   @override
   String toString() {
     return (StringBuffer('HistoryData(')
-          ..write('date: $date, ')
+          ..write('searchWord: $searchWord, ')
+          ..write('Hospital_name: $Hospital_name, ')
+          ..write('Hospital_addr: $Hospital_addr, ')
           ..write('lat: $lat, ')
           ..write('lng: $lng')
           ..write(')'))
@@ -76,47 +104,69 @@ class HistoryData extends DataClass implements Insertable<HistoryData> {
   }
 
   @override
-  int get hashCode => Object.hash(date, lat, lng);
+  int get hashCode =>
+      Object.hash(searchWord, Hospital_name, Hospital_addr, lat, lng);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is HistoryData &&
-          other.date == this.date &&
+          other.searchWord == this.searchWord &&
+          other.Hospital_name == this.Hospital_name &&
+          other.Hospital_addr == this.Hospital_addr &&
           other.lat == this.lat &&
           other.lng == this.lng);
 }
 
 class HistoryCompanion extends UpdateCompanion<HistoryData> {
-  final Value<DateTime> date;
+  final Value<String> searchWord;
+  final Value<String> Hospital_name;
+  final Value<String> Hospital_addr;
   final Value<double> lat;
   final Value<double> lng;
   const HistoryCompanion({
-    this.date = const Value.absent(),
+    this.searchWord = const Value.absent(),
+    this.Hospital_name = const Value.absent(),
+    this.Hospital_addr = const Value.absent(),
     this.lat = const Value.absent(),
     this.lng = const Value.absent(),
   });
   HistoryCompanion.insert({
-    this.date = const Value.absent(),
+    required String searchWord,
+    required String Hospital_name,
+    required String Hospital_addr,
     required double lat,
     required double lng,
-  })  : lat = Value(lat),
+  })  : searchWord = Value(searchWord),
+        Hospital_name = Value(Hospital_name),
+        Hospital_addr = Value(Hospital_addr),
+        lat = Value(lat),
         lng = Value(lng);
   static Insertable<HistoryData> custom({
-    Expression<DateTime>? date,
+    Expression<String>? searchWord,
+    Expression<String>? Hospital_name,
+    Expression<String>? Hospital_addr,
     Expression<double>? lat,
     Expression<double>? lng,
   }) {
     return RawValuesInsertable({
-      if (date != null) 'date': date,
+      if (searchWord != null) 'search_word': searchWord,
+      if (Hospital_name != null) 'hospital_name': Hospital_name,
+      if (Hospital_addr != null) 'hospital_addr': Hospital_addr,
       if (lat != null) 'lat': lat,
       if (lng != null) 'lng': lng,
     });
   }
 
   HistoryCompanion copyWith(
-      {Value<DateTime>? date, Value<double>? lat, Value<double>? lng}) {
+      {Value<String>? searchWord,
+      Value<String>? Hospital_name,
+      Value<String>? Hospital_addr,
+      Value<double>? lat,
+      Value<double>? lng}) {
     return HistoryCompanion(
-      date: date ?? this.date,
+      searchWord: searchWord ?? this.searchWord,
+      Hospital_name: Hospital_name ?? this.Hospital_name,
+      Hospital_addr: Hospital_addr ?? this.Hospital_addr,
       lat: lat ?? this.lat,
       lng: lng ?? this.lng,
     );
@@ -125,8 +175,14 @@ class HistoryCompanion extends UpdateCompanion<HistoryData> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (date.present) {
-      map['date'] = Variable<DateTime>(date.value);
+    if (searchWord.present) {
+      map['search_word'] = Variable<String>(searchWord.value);
+    }
+    if (Hospital_name.present) {
+      map['hospital_name'] = Variable<String>(Hospital_name.value);
+    }
+    if (Hospital_addr.present) {
+      map['hospital_addr'] = Variable<String>(Hospital_addr.value);
     }
     if (lat.present) {
       map['lat'] = Variable<double>(lat.value);
@@ -140,7 +196,9 @@ class HistoryCompanion extends UpdateCompanion<HistoryData> {
   @override
   String toString() {
     return (StringBuffer('HistoryCompanion(')
-          ..write('date: $date, ')
+          ..write('searchWord: $searchWord, ')
+          ..write('Hospital_name: $Hospital_name, ')
+          ..write('Hospital_addr: $Hospital_addr, ')
           ..write('lat: $lat, ')
           ..write('lng: $lng')
           ..write(')'))
@@ -153,13 +211,23 @@ class $HistoryTable extends History with TableInfo<$HistoryTable, HistoryData> {
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $HistoryTable(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _dateMeta = const VerificationMeta('date');
+  final VerificationMeta _searchWordMeta = const VerificationMeta('searchWord');
   @override
-  late final GeneratedColumn<DateTime?> date = GeneratedColumn<DateTime?>(
-      'date', aliasedName, false,
-      type: const IntType(),
-      requiredDuringInsert: false,
-      clientDefault: () => DateTime.now());
+  late final GeneratedColumn<String?> searchWord = GeneratedColumn<String?>(
+      'search_word', aliasedName, false,
+      type: const StringType(), requiredDuringInsert: true);
+  final VerificationMeta _Hospital_nameMeta =
+      const VerificationMeta('Hospital_name');
+  @override
+  late final GeneratedColumn<String?> Hospital_name = GeneratedColumn<String?>(
+      'hospital_name', aliasedName, false,
+      type: const StringType(), requiredDuringInsert: true);
+  final VerificationMeta _Hospital_addrMeta =
+      const VerificationMeta('Hospital_addr');
+  @override
+  late final GeneratedColumn<String?> Hospital_addr = GeneratedColumn<String?>(
+      'hospital_addr', aliasedName, false,
+      type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _latMeta = const VerificationMeta('lat');
   @override
   late final GeneratedColumn<double?> lat = GeneratedColumn<double?>(
@@ -171,7 +239,8 @@ class $HistoryTable extends History with TableInfo<$HistoryTable, HistoryData> {
       'lng', aliasedName, false,
       type: const RealType(), requiredDuringInsert: true);
   @override
-  List<GeneratedColumn> get $columns => [date, lat, lng];
+  List<GeneratedColumn> get $columns =>
+      [searchWord, Hospital_name, Hospital_addr, lat, lng];
   @override
   String get aliasedName => _alias ?? 'history';
   @override
@@ -181,9 +250,29 @@ class $HistoryTable extends History with TableInfo<$HistoryTable, HistoryData> {
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('date')) {
+    if (data.containsKey('search_word')) {
       context.handle(
-          _dateMeta, date.isAcceptableOrUnknown(data['date']!, _dateMeta));
+          _searchWordMeta,
+          searchWord.isAcceptableOrUnknown(
+              data['search_word']!, _searchWordMeta));
+    } else if (isInserting) {
+      context.missing(_searchWordMeta);
+    }
+    if (data.containsKey('hospital_name')) {
+      context.handle(
+          _Hospital_nameMeta,
+          Hospital_name.isAcceptableOrUnknown(
+              data['hospital_name']!, _Hospital_nameMeta));
+    } else if (isInserting) {
+      context.missing(_Hospital_nameMeta);
+    }
+    if (data.containsKey('hospital_addr')) {
+      context.handle(
+          _Hospital_addrMeta,
+          Hospital_addr.isAcceptableOrUnknown(
+              data['hospital_addr']!, _Hospital_addrMeta));
+    } else if (isInserting) {
+      context.missing(_Hospital_addrMeta);
     }
     if (data.containsKey('lat')) {
       context.handle(

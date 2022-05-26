@@ -1,10 +1,14 @@
 import 'package:chat_pr/value_and_struct.dart';
+import 'package:drift/drift.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+
+import 'database/drift_database.dart';
 
 Future<void> getLocation() async {
   final location = await Geolocator.getCurrentPosition();
@@ -14,7 +18,7 @@ Future<void> getLocation() async {
 }
 
 Future<void> setMarker(double lat, double lng, int index, String hospName,
-    String addr, var telNo, BitmapDescriptor myMarker) async {
+    String addr, var telNo, String schWord, BitmapDescriptor myMarker) async {
   Marker marker_set(String tmp) {
     return Marker(
       markerId: MarkerId(index.toString()),
@@ -25,9 +29,17 @@ Future<void> setMarker(double lat, double lng, int index, String hospName,
         snippet: tmp,
       ),
       icon: myMarker,
-      onTap: () {
-        print("Marker");
-      },
+        onTap: ()async {
+          final key = await GetIt.I<LocalDatabase>().createHistory(
+              HistoryCompanion(
+                searchWord: Value(schWord),
+                Hospital_name: Value(hospName),
+                Hospital_addr: Value(addr),
+                lat: Value(lat),
+                lng: Value(lng),
+              )
+          );
+        },
     );
   }
 
@@ -42,7 +54,7 @@ Future<void> setMarker(double lat, double lng, int index, String hospName,
   }
 }
 
-Future<void> data_to_setmarker(var data1) async {
+Future<void> data_to_setmarker(var data1, String searched) async {
   BitmapDescriptor myMarker = await BitmapDescriptor.fromAssetImage(
       //now img 70px. 꼴리는 거로 바꾸세욘,..,
       const ImageConfiguration(),
@@ -66,6 +78,7 @@ Future<void> data_to_setmarker(var data1) async {
           data1["response"]["body"]["items"]["item"]["yadmNm"],
           data1["response"]["body"]["items"]["item"]["addr"],
           data1["response"]["body"]["items"]["item"]["telno"],
+          searched,
           myMarker);
     }
   } else {
@@ -88,6 +101,7 @@ Future<void> data_to_setmarker(var data1) async {
           data1["response"]["body"]["items"]["item"][i]["yadmNm"],
           data1["response"]["body"]["items"]["item"][i]["addr"],
           data1["response"]["body"]["items"]["item"][i]["telno"],
+          searched,
           myMarker);
     }
   }
@@ -119,7 +133,7 @@ Future<void> getHospInfo(Disease d_val) async {
     data1 = jsonDecode(utf8.decode(response.bodyBytes));
   } while (distance_cnt < 4 && data1["response"]["body"]["totalCount"] == 0);
   try {
-    await data_to_setmarker(data1);
+    await data_to_setmarker(data1, d_val.searched);
   } catch (e) {
     print(e);
   }

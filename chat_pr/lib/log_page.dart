@@ -1,4 +1,16 @@
+import 'package:chat_pr/database/drift_database.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:chat_pr/log_to_map.dart';
+
+class Para{
+  final String name_para;
+  final String addr_para;
+  final double lat_para;
+  final double lng_para;
+  final int idx;
+  Para(this.name_para, this.addr_para, this.lat_para, this.lng_para, this.idx);
+}
 
 class logPage extends StatefulWidget {
   @override
@@ -6,7 +18,6 @@ class logPage extends StatefulWidget {
 }
 
 class _SearchlogState extends State<logPage> {
-  final DateTime historyDay = DateTime.now();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,28 +40,58 @@ class _SearchlogState extends State<logPage> {
           Expanded(
             child: Container(
               color: Color(0xffeeeeee),
-              child: Stack(children: [
-                ListView.separated(
-                    padding: const EdgeInsets.all(10.0),
-                    separatorBuilder: (context, index) {
-                      return SizedBox(height: 8.0);
-                    },
-                    itemCount: 20, //검색 기록 개수 수정 요망
-                    itemBuilder: (context, int index) {
-                      return InkWell(
-                        onTap: () {
-                          //검색했던 병원 지도가서 보기;
-                        },
-                        child: Container(
-                          decoration: _Log_Decoration(),
-                          child: const Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: Text("여기에 검색기록을 넣을 거에요."),
+              child: StreamBuilder<List<HistoryData>>(
+                stream: GetIt.I<LocalDatabase>().watchHistory(),
+                builder: (context, snapshot){
+                  return ListView.separated(
+                      padding: const EdgeInsets.all(10.0),
+                      separatorBuilder: (context, index) {
+                        return SizedBox(height: 8.0);
+                      },
+                      itemCount: snapshot.data!.length, //검색 기록 개수 수정 요망
+                      itemBuilder: (context, int index) {
+                        final histories = snapshot.data![index];
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Text('스케줄을 불러올 수 없습니다.'),
+                          );
+                        }
+                        if (snapshot.connectionState != ConnectionState.none &&
+                            !snapshot.hasData) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        final para = Para(histories.Hospital_name, histories.Hospital_addr, histories.lat, histories.lng, index);
+                        return InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => logMap(parameter: para)));
+                            //검색했던 병원 지도가서 보기;
+                          },
+                          child: Container(
+                            decoration: _Log_Decoration(),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("${histories.searchWord} | ${histories.Hospital_name}", style:
+                                  TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 15,
+                                    fontFamily: "Inter",
+                                    fontWeight: FontWeight.w700,),),
+                                  SizedBox(height: 10.0),
+                                  Text(histories.Hospital_addr),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
-                      );
-                    }),
-              ]),
+                        );
+                      });
+                }
+              ),
             ),
           ),
         ],

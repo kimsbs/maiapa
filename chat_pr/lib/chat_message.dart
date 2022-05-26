@@ -124,6 +124,7 @@ class ChatMessage extends StatelessWidget {
               style: OutlinedButton.styleFrom(primary: Colors.green),
               onPressed: () {
                 flag = false;
+                now_value.searched=txt;
                 markers.clear();
                 Press_Map(context, now_value);
               },

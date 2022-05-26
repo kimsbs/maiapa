@@ -1,15 +1,25 @@
-import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
+
+import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:chat_pr/screen/home_screen.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:chat_pr/screen/home_screen.dart';
+
+import 'database/drift_database.dart';
+import 'package:get_it/get_it.dart';
+
 
 void main() {
+  final database = LocalDatabase();
+
+  GetIt.I.registerSingleton<LocalDatabase>(database);
+
   runApp(Home());
 }
 
 // Execute HomeScreen
 class Home extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
