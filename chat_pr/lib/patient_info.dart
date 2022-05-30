@@ -6,6 +6,8 @@ String onset = ""; //증상 발현 시기 ex) 2일전, 3시간전
 String location = ""; //증상 위치 ex) 명치, 복부
 String Associated = ""; //추가 증상
 int needDiag = 0;
+String expDis="";
+String hospToGo="";
 
 /*
 "Duration": "지속",

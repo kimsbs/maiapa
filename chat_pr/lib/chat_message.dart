@@ -1,8 +1,9 @@
+import 'package:chat_pr/patient_info.dart';
 import 'package:chat_pr/value_and_struct.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import 'package:chat_pr/findHosp.dart';
 import 'check_valid.dart';
 import 'map_page.dart';
 
@@ -29,6 +30,7 @@ class ChatMessage extends StatelessWidget {
 
   Widget build(BuildContext context) {
     _loadCSV();
+    findSimilar(age, sex, Height, Weight, complaint);
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10.0),
       child: Row(
@@ -37,6 +39,8 @@ class ChatMessage extends StatelessWidget {
       ),
     );
   }
+
+
 
   //응답 메세지
   @override
