@@ -40,8 +40,6 @@ class ChatMessage extends StatelessWidget {
     );
   }
 
-
-
   //응답 메세지
   @override
   List<Widget> responseMessage(context) {

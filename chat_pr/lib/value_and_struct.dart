@@ -1,8 +1,11 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import 'chat_message.dart';
+
 const List<List<String>> disease_code_list = [
   ["00", "일반의"],
   ["01", "내과"],
+  ["01", "소화기내과"],
   ["02", "신경과"],
   ["03", "정신건강의학과"],
   ["04", "외과"],
@@ -69,6 +72,7 @@ class Disease {
 
 List<List<dynamic>> csv_data = [];
 List<List<String>> diagnosis = [];
+List<ChatMessage> chats = [];
 List<String> distance = ["1000", "3000", "5000", "10000"];
 
 Map<MarkerId, Marker> markers = <MarkerId, Marker>{};

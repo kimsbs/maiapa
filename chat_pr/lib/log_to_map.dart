@@ -11,9 +11,9 @@ class logMap extends StatefulWidget {
 
 }
 
-
 class _logMapState extends State<logMap> {
   @override
+
   Widget build(BuildContext context){
     print("===================MARK======================");
     print(widget.parameter.lat_para);
@@ -34,6 +34,17 @@ class _logMapState extends State<logMap> {
     );
 
     return Scaffold(
+       appBar: AppBar(
+          title: const Center(
+            child: Text(
+              '지도',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+       ),
       body: GoogleMap(
         mapType: MapType.normal,
         initialCameraPosition: initialPosition,

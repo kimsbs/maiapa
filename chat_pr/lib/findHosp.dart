@@ -17,12 +17,7 @@ Future<void> findSimilar(String age, String sex, int Height, int Weight, String 
   for(i=0;i<data.length;i++){
     if((data[i]["Sex"] == sex) && (data[i]["Height"] >= Height - 5) && (data[i]["Height"] <= Height + 5)
         && (data[i]["Weight"] >= Weight - 5) && (data[i]["Weight"] <= Weight + 5) && (data[i]["Chief complaint"].toString().contains(Complaints))){
-      print("aaaa");
-      print(Complaints);
-      print(data[i]["Chief complaint"].toString());
       expDis = data[i]["level5/diagnosis"].toString();
-      print(expDis);
-      print("bbbb");
       break;
     }
   }

@@ -1,3 +1,4 @@
+import 'package:chat_pr/value_and_struct.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_pr/chat_message.dart';
 
@@ -8,17 +9,26 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final TextEditingController _textEditingController = TextEditingController();
-  final List<ChatMessage> _chats = [];
+  //final List<ChatMessage> chats = [];
   final DateTime historyDay = DateTime.now();
+
+  ScrollController _scrollController = ScrollController();
+
+  bool _needsScroll = false;
 
   @override
   Widget build(BuildContext context) {
-    if (_chats.isEmpty) {
+    if (chats.isEmpty) {
       _Add_chat("/도움", false);
+    }
+    if (_needsScroll) {
+      WidgetsBinding.instance.addPostFrameCallback(
+            (_) => _scrollToEnd());
+      _needsScroll = false;
     }
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        //automaticallyImplyLeading: false,
         backgroundColor: Color(0xff00b050),
         title: Center(
           child: Image.asset(
@@ -36,14 +46,13 @@ class _ChatPageState extends State<ChatPage> {
           Expanded(
             child: Container(
               color: Color(0xffeeeeee),
-              child:
-                ListView.builder(
-                padding: const EdgeInsets.all(8.0),
-                reverse: true,
-                itemBuilder: (_, int index) => _chats[index],
-                itemCount: _chats.length,
-              ),
-
+              child: ListView.builder(
+                  padding: const EdgeInsets.all(8.0),
+                  //reverse: true,
+                  itemBuilder: (_, int index) => chats[index],
+                  itemCount: chats.length,
+                  controller: _scrollController,
+                ),
             ),
           ),
           Container(
@@ -103,7 +112,7 @@ class _ChatPageState extends State<ChatPage> {
         children: [
           Flexible(
             child: TextField(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: InputBorder.none,
                 focusedBorder: InputBorder.none,
                 contentPadding: EdgeInsets.only(left: 8),
@@ -137,13 +146,22 @@ class _ChatPageState extends State<ChatPage> {
     _Add_chat(text, false); // response_message
   }
 
+  _scrollToEnd() async {
+    //if(_scrollController.position.maxScrollExtent > 0) {
+      _scrollController.jumpTo(
+          _scrollController.position.maxScrollExtent,
+      );
+    //}
+  }
+
   void _Add_chat(String text, bool type) {
     ChatMessage newchat = ChatMessage(
       txt: text,
       type: type,
     );
     setState(() {
-      _chats.insert(0, newchat);
+      chats.add(newchat);
+      _needsScroll = true;
     });
   }
 }
