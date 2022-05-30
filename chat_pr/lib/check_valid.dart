@@ -2,29 +2,32 @@ import 'package:chat_pr/findHosp.dart';
 import 'package:chat_pr/value_and_struct.dart';
 import 'package:chat_pr/patient_info.dart';
 
-Disease check_valid(String text) {
+Disease check_valid(String text, bool types) {
   String init_txt = "병 진단을 원하시면 [진단],\n주변 병원 검색을 원하시면 [병원]를 입력해주세요!";
   String return_str = "";
   int i;
   int flag = 0;
   String disease_code = "";
 
+  if(types) {
+    return Disease("", 4, text);
+  }
   if (text == "/도움") {
     //needDiag = 0;
     return Disease(init_txt, 4, "");
   }
-  // else if (text == "병원") {
-  //   sex = ""; //성별
-  //   age = ""; //나이 => 연령대로 입력 ex)40대, 50대
-  //   Height = 0;
-  //   Weight = 0; // 키, 몸무게 => 5단위 정수로 입력
-  //   complaint = ""; //증상 ex)배가 아파요
-  //   onset = ""; //증상 발현 시기 ex) 2일전, 3시간전
-  //   location = ""; //증상 위치 ex) 명치, 복부
-  //   Associated = ""; //추가 증상
-  //   needDiag = 0;
-  //   return Disease("질병 혹은 진단과를 입력해 주세요!\nex) 화상, 내과", 3, text);
-  // }
+  else if (text == "병원") {
+    sex = ""; //성별
+    age = ""; //나이 => 연령대로 입력 ex)40대, 50대
+    Height = 0;
+    Weight = 0; // 키, 몸무게 => 5단위 정수로 입력
+    complaint = ""; //증상 ex)배가 아파요
+    onset = ""; //증상 발현 시기 ex) 2일전, 3시간전
+    location = ""; //증상 위치 ex) 명치, 복부
+    Associated = ""; //추가 증상
+    needDiag = 0;
+    return Disease("질병 혹은 진단과를 입력해 주세요!\nex) 화상, 내과", 3, text);
+  }
   else if (text == "진단") {
     needDiag = 1; // 진단 항목으로 넘어갔음을 표시
     return Disease("성별을 입력해주세요!\nex) 남자, 여자", 3, text);
@@ -94,7 +97,7 @@ Disease check_valid(String text) {
         });
         if (flag == 1) {
           return_str = "{$expDis}이(가) 예상됩니다. \n관련 병원을 지도에 보여드릴게요.";
-          return Disease(disease_code, flag, "");
+          return Disease(disease_code, flag, expDis);
         } else {
           //case 3중 매칭된 병원이 없을경우
           return Disease("$expDis에 적합한 진단과가 없습니다.", 2, "");
@@ -127,10 +130,10 @@ Disease check_valid(String text) {
     });
   }
   if (flag == 1) {
-    return Disease(disease_code, flag, "");
+    return Disease(disease_code, flag, text);
   } else if (flag == 2) {
     //case 3중 매칭된 병원이 없을경우
-    return Disease("$text에 적합한 진단과가 없습니다.", 2, "");
+    return Disease("$text에 적합한 진단과가 없습니다.", 2, text);
   } //default
-  return Disease("질병 혹은 진단과를 입력해 주세요!\nex) 화상, 내과", 3, "");
+  return Disease("질병 혹은 진단과를 입력해 주세요!\nex) 화상, 내과", 3, text);
 }

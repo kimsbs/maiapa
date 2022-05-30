@@ -1,6 +1,11 @@
+import 'package:chat_pr/check_valid.dart';
+import 'package:chat_pr/findHosp.dart';
 import 'package:chat_pr/value_and_struct.dart';
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_pr/chat_message.dart';
+import 'package:flutter/services.dart';
+import 'package:chat_pr/patient_info.dart';
 
 class ChatPage extends StatefulWidget {
   @override
@@ -18,6 +23,7 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    _loadCSV();
     if (chats.isEmpty) {
       _Add_chat("/도움", false);
     }
@@ -147,21 +153,36 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   _scrollToEnd() async {
-    //if(_scrollController.position.maxScrollExtent > 0) {
-      _scrollController.jumpTo(
+    _scrollController.jumpTo(
           _scrollController.position.maxScrollExtent,
-      );
-    //}
+    );
   }
 
   void _Add_chat(String text, bool type) {
+    Disease d_val;
+    //check_valid에서 들어온 text판별 정상유무는 type에 저장.
+    d_val = check_valid(text, type);
+    if(!type) {
+      findSimilar(age, sex, Height, Weight, complaint);
+    }
     ChatMessage newchat = ChatMessage(
-      txt: text,
+      d_val: d_val,
       type: type,
     );
     setState(() {
       chats.add(newchat);
       _needsScroll = true;
     });
+  }
+
+  void _loadCSV() async {
+    if(diagnosis.isEmpty) {
+      final _rawData = await rootBundle.loadString("asset/csv/test-1.csv");
+      List<List<dynamic>> _listData = const CsvToListConverter().convert(_rawData);
+      csv_data = _listData;
+      csv_data.forEach((element) {
+        diagnosis.add(element[0].split(';'));
+      });
+    }
   }
 }
