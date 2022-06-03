@@ -96,9 +96,7 @@ class _googleMapState extends State<googleMap> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: renderAppBar(),
-      body: flag == false
-          ? Center(child: CircularProgressIndicator())
-          : GoogleMap(
+      body: GoogleMap(
               mapType: MapType.normal,
               initialCameraPosition: initialPosition,
               myLocationEnabled: true,

@@ -34,7 +34,7 @@ class _ChatPageState extends State<ChatPage> {
     }
     return Scaffold(
       appBar: AppBar(
-        //automaticallyImplyLeading: false,
+        automaticallyImplyLeading: false,
         backgroundColor: Color(0xff00b050),
         title: Center(
           child: Image.asset(

@@ -23,6 +23,7 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: '마이아파',
       theme: ThemeData(
         primarySwatch: Colors.green,
